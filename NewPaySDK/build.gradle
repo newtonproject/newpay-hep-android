@@ -7,8 +7,8 @@ publish {
     groupId = 'org.newtonproject.newpay.android.sdk'
     artifactId = 'NewPaySDK'
     publishVersion = '1.0.0'
-    desc = 'third application request profile from newpay'
-    website = 'https://github.com/weixuefeng/NewMallDemo.git'
+    desc = 'NewPaySDK for jointly login and place order information.'
+    website = 'https://github.com/newtonproject/NewPaySDK-Android'
 }
 
 android {
