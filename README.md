@@ -3,6 +3,10 @@
 # 1.add gradle dependency on your app build.gradle
 ```
 implementation 'org.newtonproject.newpay.android.sdk:NewPaySDK:1.0.2'
+implementation files('libs/crypto-3.3.1-android.jar')
+implementation files('libs/utils-3.3.1-android.jar')
+implementation 'com.madgag.spongycastle:core:1.58.0.0'
+implementation "com.madgag.spongycastle:prov:1.58.0.0"
 ```
 # 2. init NewPaySDK on application
 ```
