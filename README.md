@@ -2,23 +2,23 @@
 
 # 1.add gradle dependency on your app build.gradle
 ```
-implementation 'org.newtonproject.newpay.android.sdk:NewPaySDK:1.0.0'
+implementation 'org.newtonproject.newpay.android.sdk:NewPaySDK:1.0.2'
 ```
-# 2. init NewPayApi on application
+# 2. init NewPaySDK on application
 ```
 // in release environment
-NewPayApi.init(getApplication(), yourPrivateKey, $yourtransaferId);
+NewPaySDK.init(getApplication(), $yourAppId);
 
 // in testnet, beta, dev and etc. environment
-NewPayApi.init(getApplication(), yourPrivateKey, $yourtransaferId, Environment.DEVNET);
+NewPaySDK.init(getApplication(), $yourAppId, Environment.DEVNET);
 ```
 # 3. request profile information
 ```
-NewPayApi.requestProfileFromNewPay(Activity activity);
+NewPaySDK.requestProfile(Activity activity);
 ```
 # 4. get profile information and sigmessage
 ```
-if(requestCode == NewPayApi.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
+if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
             String profile = data.getStringExtra("profile");
             String sigMessage = data.getStringExtra("signature");
             Log.e(TAG, "onActivityResult: " + data.toString() );
@@ -39,11 +39,11 @@ if(requestCode == NewPayApi.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
                 Log.e(TAG, "onActivityResult: " + sig.toString());
             }
         }
-        if(requestCode == NewPayApi.REQUEST_CODE_NEWPAY && resultCode == RESULT_CANCELED) {
+        if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY && resultCode == RESULT_CANCELED) {
             Toast.makeText(this, "user canceled", Toast.LENGTH_LONG).show();
         }
         // pay result
-        if(requestCode == NewPayApi.REQUEST_CODE_NEWPAY_PAY && resultCode == RESULT_OK){
+        if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY && resultCode == RESULT_OK){
             if(data != null) {
                 String txid = data.getStringExtra("txid");
                 Toast.makeText(this, "txid is:" + txid, Toast.LENGTH_SHORT).show();
@@ -51,14 +51,14 @@ if(requestCode == NewPayApi.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
                 Toast.makeText(this, "error data is null", Toast.LENGTH_SHORT).show();
             }
         }
-        if(requestCode == NewPayApi.REQUEST_CODE_NEWPAY_PAY && resultCode == RESULT_CANCELED){
+        if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY && resultCode == RESULT_CANCELED){
             Toast.makeText(this, "User canceled", Toast.LENGTH_SHORT).show();
         }
 ```
 
 # 5. request push order
 ```
-  NewpayApi.requestPushOrder(Activity activity, ArrayList<Order> orders)
+  NewPaySDK.placeOrder(Activity activity, ArrayList<Order> orders, SigMessage sigMessage);
 
 ```
 
@@ -66,4 +66,10 @@ if(requestCode == NewPayApi.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
 
 ### Change log
 
-# 1.0.0 add multiple environment init for NewMall.
+- 2019.2.12 1.0.0 add multiple environment init for NewMall.
+
+- 2019.2.15 1.0.2
+
+> 删除初始化参数(PrivateKey), 添加方法参数(SigMessage). 建议服务端进行签名，客户端不要存放私钥.
+
+> 更改方法名 NewPayApi -> NewPaySDK.
