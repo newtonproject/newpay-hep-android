@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import org.newtonproject.newpay.android.sdk.NewPayApi;
+import org.newtonproject.newpay.android.sdk.NewPaySDK;
 import org.newtonproject.newpay.android.sdk.bean.Currency;
 import org.newtonproject.newpay.android.sdk.bean.Order;
 import org.newtonproject.newpay.android.sdk.bean.ProfileInfo;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        NewPayApi.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52");
+        NewPaySDK.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52");
     }
 
     private void initView() {
@@ -88,10 +88,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.profileLayout:
-                NewPayApi.requestProfileFromNewPay(this);
+                NewPaySDK.requestProfile(this);
                 break;
             case R.id.request20Bt:
-                NewPayApi.requestPayForThirdApp(this,"0x920bc30537e3ea976fea09b8a4f025d20e4c674a",BigInteger.valueOf(100));
+                NewPaySDK.pay(this,"0x920bc30537e3ea976fea09b8a4f025d20e4c674a",BigInteger.valueOf(100));
                 break;
             case R.id.pushMultiple:
                 pushMultiple();
@@ -101,22 +101,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.dev:
                 evn.setText("Dev");
-                NewPayApi.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52", Environment.DEVNET);
+                NewPaySDK.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52", Environment.DEVNET);
 
                 break;
             case R.id.beta:
                 evn.setText("Beta");
-                NewPayApi.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52", Environment.BETANET);
+                NewPaySDK.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52", Environment.BETANET);
 
                 break;
             case R.id.testnet:
                 evn.setText("testnet");
-                NewPayApi.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52", Environment.TESTNET);
+                NewPaySDK.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52", Environment.TESTNET);
 
                 break;
             case R.id.mainnet:
                 evn.setText("main");
-                NewPayApi.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52", Environment.MAINNET);
+                NewPaySDK.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52", Environment.MAINNET);
                 break;
         }
     }
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         order.sellerNewid = "NEWID1ab6wnXrhpEbRtH44zrs3wcjqxmbeqU28Zpv64dzahfRvvJq6JRQ";
         order.buyerNewid = profileInfo.newid;
         orders.add(order);
-        NewPayApi.requestPushOrder(this, orders);
+        NewPaySDK.placeOrder(this, orders);
     }
 
     private void pushMultiple() {
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             order.buyerNewid = profileInfo.newid;
             datas.add(order);
         }
-        NewPayApi.requestPushOrder(this, datas);
+        NewPaySDK.placeOrder(this, datas);
 
     }
 
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        if(requestCode == NewPayApi.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
+        if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
             String profile = data.getStringExtra("profile");
             String sigMessage = data.getStringExtra("signature");
 
@@ -191,12 +191,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         // pay result
-        if(requestCode == NewPayApi.REQUEST_CODE_NEWPAY_PAY && resultCode == RESULT_OK){
+        if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY && resultCode == RESULT_OK){
             String txid = data.getStringExtra("txid");
             Toast.makeText(this, "txid is:" + txid, Toast.LENGTH_SHORT).show();
         }
 
-        if(requestCode == NewPayApi.REQUEST_CODE_PUSH_ORDER && resultCode == RESULT_OK) {
+        if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER && resultCode == RESULT_OK) {
             String result = data.getStringExtra("result");
             Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
         }

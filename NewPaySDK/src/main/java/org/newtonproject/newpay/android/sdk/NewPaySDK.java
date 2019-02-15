@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class NewPayApi {
+public class NewPaySDK {
 
     private static Application mApplication;
     private static String privateKey;
@@ -45,11 +45,17 @@ public class NewPayApi {
     private static final String CONTENT = "CONTENT";
     private static final String SIGNATURE = "SIGNATURE";
 
+    private static final String SYMBOL = "SYMBOL";
+    private static final String ADDRESS = "ADDRESS";
+    private static final String AMOUNT = "AMOUNT";
+    private static final String SOURCE = "REQUEST_PAY_SOURCE";
+
+
     private static String SHARE_URL = RELEASE_SHARE_URL;
     private static String authorize_pay = Constant.MainNet.authorize_pay;
     private static String authorize_login_place = Constant.MainNet.authorize_login_place;
 
-    private NewPayApi() {}
+    private NewPaySDK() {}
 
 
     /**
@@ -95,91 +101,74 @@ public class NewPayApi {
         }
     }
 
-    public static void requestProfileFromNewPay(Activity activity) {
+    public static void requestProfile(Activity activity) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.REQUEST_PROFILE);
         intent.putExtra(APPID, appId);
         intent.putExtra(SIGNATURE, gson.toJson(getSigMessage(privateKey)));
-        boolean isIntentSafe = checkNewPay(intent);
-        // Start an activity if it's safe
-        if (isIntentSafe) {
-            activity.startActivityForResult(intent, REQUEST_CODE_NEWPAY);
-        } else{
-            startDownloadUrl(activity);
-            //Toast.makeText(activity, R.string.no_newpay_application, Toast.LENGTH_SHORT).show();
-        }
+        checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY);
     }
 
-    public static void requestPayForThirdApp(Activity activity, String address, BigInteger account){
+    public static void pay(Activity activity, String address, BigInteger account){
         String unitStr = "NEW";
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_pay));
-        intent.putExtra("SYMBOL", unitStr);
-        intent.putExtra("ADDRESS", address);
-        intent.putExtra("AMOUNT", account.toString(10));
-        intent.putExtra("REQUEST_PAY_SOURCE", activity.getPackageName());
-        boolean isIntentSafe = checkNewPay(intent);
-        // Start an activity if it's safe
-        if (isIntentSafe) {
-            activity.startActivityForResult(intent, REQUEST_CODE_NEWPAY_PAY);
-        } else{
-            startDownloadUrl(activity);
-        }
+        intent.putExtra(SYMBOL, unitStr);
+        intent.putExtra(ADDRESS, address);
+        intent.putExtra(AMOUNT, account.toString(10));
+        intent.putExtra(SOURCE, activity.getPackageName());
+        checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY_PAY);
     }
 
-    public static void requestPushOrder(Activity activity, ArrayList<Order> orders) {
+    public static void placeOrder(Activity activity, ArrayList<Order> orders) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.PUSH_ORDER);
         intent.putExtra(APPID, appId);
         intent.putExtra(SIGNATURE, gson.toJson(getSigMessage(privateKey)));
         intent.putExtra(CONTENT, gson.toJson(orders));
-        boolean isIntentSafe = checkNewPay(intent);
-        if (isIntentSafe) {
-            activity.startActivityForResult(intent, REQUEST_CODE_PUSH_ORDER);
-        } else{
-            startDownloadUrl(activity);
-        }
+        checkAndStartActivity(activity, intent, REQUEST_CODE_PUSH_ORDER);
+
     }
 
-    public static void requestProfileFromNewPay(Fragment activity) {
+    public static void requestProfile(Fragment activity) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.REQUEST_PROFILE);
         intent.putExtra(APPID, appId);
         intent.putExtra(SIGNATURE, gson.toJson(getSigMessage(privateKey)));
-        boolean isIntentSafe = checkNewPay(intent);
-        // Start an activity if it's safe
-        if (isIntentSafe) {
-            activity.startActivityForResult(intent, REQUEST_CODE_NEWPAY);
-        } else{
-            startDownloadUrl(activity.getContext());
-            //Toast.makeText(activity, R.string.no_newpay_application, Toast.LENGTH_SHORT).show();
-        }
+        checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY);
     }
 
-    public static void requestPayForThirdApp(Fragment activity, String address, BigInteger account){
+    public static void pay(Fragment activity, String address, BigInteger account){
         String unitStr = "NEW";
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_pay));
-        intent.putExtra("SYMBOL", unitStr);
-        intent.putExtra("ADDRESS", address);
-        intent.putExtra("AMOUNT", account.toString(10));
-        intent.putExtra("REQUEST_PAY_SOURCE", activity.getContext().getPackageName());
-        boolean isIntentSafe = checkNewPay(intent);
-        // Start an activity if it's safe
-        if (isIntentSafe) {
-            activity.startActivityForResult(intent, REQUEST_CODE_NEWPAY_PAY);
-        } else{
-            startDownloadUrl(activity.getContext());
-        }
+        intent.putExtra(SYMBOL, unitStr);
+        intent.putExtra(ADDRESS, address);
+        intent.putExtra(AMOUNT, account.toString(10));
+        intent.putExtra(SOURCE, activity.getContext().getPackageName());
+        checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY_PAY);
     }
 
-    public static void requestPushOrder(Fragment activity, ArrayList<Order> orders) {
+    public static void placeOrder(Fragment activity, ArrayList<Order> orders) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.PUSH_ORDER);
         intent.putExtra(APPID, appId);
         intent.putExtra(SIGNATURE, gson.toJson(getSigMessage(privateKey)));
         intent.putExtra(CONTENT, gson.toJson(orders));
+        checkAndStartActivity(activity, intent, REQUEST_CODE_PUSH_ORDER);
+    }
+
+    private static void checkAndStartActivity(Activity activity, Intent intent, int requestCode) {
         boolean isIntentSafe = checkNewPay(intent);
         if (isIntentSafe) {
-            activity.startActivityForResult(intent, REQUEST_CODE_PUSH_ORDER);
+            activity.startActivityForResult(intent, requestCode);
+        } else{
+            startDownloadUrl(activity);
+        }
+    }
+
+    private static void checkAndStartActivity(Fragment activity, Intent intent, int requestCode) {
+        boolean isIntentSafe = checkNewPay(intent);
+        if (isIntentSafe) {
+            activity.startActivityForResult(intent, requestCode);
         } else{
             startDownloadUrl(activity.getContext());
         }
@@ -205,7 +194,6 @@ public class NewPayApi {
                     }
                 }).create();
         dialog.show();
-
     }
 
     private static boolean checkNewPay(Intent intent) {
