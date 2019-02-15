@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">newpaySDK</string>
+    <string name="cancel">取消</string>
+    <string name="download_newpay">下载 NewPay</string>
+    <string name="no_newpay_application">检测到没有NewPay应用程序，请点击下方按钮下载安装。</string>
+</resources>
