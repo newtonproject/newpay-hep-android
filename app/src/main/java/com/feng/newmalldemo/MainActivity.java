@@ -22,9 +22,13 @@ import org.newtonproject.newpay.android.sdk.bean.Order;
 import org.newtonproject.newpay.android.sdk.bean.ProfileInfo;
 import org.newtonproject.newpay.android.sdk.bean.SigMessage;
 import org.newtonproject.newpay.android.sdk.constant.Environment;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Sign;
+import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -57,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        NewPaySDK.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52");
+        NewPaySDK.init(getApplication(), "9a674d65c945569a9071b31b07f3bc52");
     }
 
     private void initView() {
@@ -88,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.profileLayout:
-                NewPaySDK.requestProfile(this);
+                NewPaySDK.requestProfile(this, getSigMessage(privateKey));
                 break;
             case R.id.request20Bt:
                 NewPaySDK.pay(this,"0x920bc30537e3ea976fea09b8a4f025d20e4c674a",BigInteger.valueOf(100));
@@ -101,22 +105,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.dev:
                 evn.setText("Dev");
-                NewPaySDK.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52", Environment.DEVNET);
+                NewPaySDK.init(getApplication(), "9a674d65c945569a9071b31b07f3bc52", Environment.DEVNET);
 
                 break;
             case R.id.beta:
                 evn.setText("Beta");
-                NewPaySDK.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52", Environment.BETANET);
+                NewPaySDK.init(getApplication(), "9a674d65c945569a9071b31b07f3bc52", Environment.BETANET);
 
                 break;
             case R.id.testnet:
                 evn.setText("testnet");
-                NewPaySDK.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52", Environment.TESTNET);
+                NewPaySDK.init(getApplication(), "9a674d65c945569a9071b31b07f3bc52", Environment.TESTNET);
 
                 break;
             case R.id.mainnet:
                 evn.setText("main");
-                NewPaySDK.init(getApplication(), privateKey, "9a674d65c945569a9071b31b07f3bc52", Environment.MAINNET);
+                NewPaySDK.init(getApplication(), "9a674d65c945569a9071b31b07f3bc52", Environment.MAINNET);
                 break;
         }
     }
@@ -134,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         order.sellerNewid = "NEWID1ab6wnXrhpEbRtH44zrs3wcjqxmbeqU28Zpv64dzahfRvvJq6JRQ";
         order.buyerNewid = profileInfo.newid;
         orders.add(order);
-        NewPaySDK.placeOrder(this, orders);
+        NewPaySDK.placeOrder(this, orders, getSigMessage(privateKey));
     }
 
     private void pushMultiple() {
@@ -152,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             order.buyerNewid = profileInfo.newid;
             datas.add(order);
         }
-        NewPaySDK.placeOrder(this, datas);
+        NewPaySDK.placeOrder(this, datas, getSigMessage(privateKey));
 
     }
 
@@ -200,5 +204,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String result = data.getStringExtra("result");
             Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    private static String getMessage() {
+        return System.currentTimeMillis() + new Random().nextInt(1000000) + "";
+    }
+
+    private static SigMessage getSigMessage(String privateKey) {
+        String message = getMessage();
+        Sign.SignatureData sig = Sign.signMessage(message.getBytes(), ECKeyPair.create(Numeric.toBigInt(privateKey)));
+        return new SigMessage(Numeric.toHexString(sig.getR()), Numeric.toHexString(sig.getS()), message);
     }
 }

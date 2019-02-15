@@ -42,10 +42,6 @@ project.ext {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation files('libs/crypto-3.3.1-android.jar')
-    implementation files('libs/utils-3.3.1-android.jar')
-    implementation 'com.madgag.spongycastle:core:1.58.0.0'
-    implementation "com.madgag.spongycastle:prov:1.58.0.0"
     implementation "com.google.code.gson:gson:2.8.2"
     implementation 'com.android.support:appcompat-v7:26.1.0'
 }

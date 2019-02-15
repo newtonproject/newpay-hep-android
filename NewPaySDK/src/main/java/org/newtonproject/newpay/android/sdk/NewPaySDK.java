@@ -18,19 +18,14 @@ import org.newtonproject.newpay.android.sdk.bean.Order;
 import org.newtonproject.newpay.android.sdk.bean.SigMessage;
 import org.newtonproject.newpay.android.sdk.constant.Constant;
 import org.newtonproject.newpay.android.sdk.constant.Environment;
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Sign;
-import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class NewPaySDK {
 
     private static Application mApplication;
-    private static String privateKey;
     private static String appId;
     private static Gson gson;
     public static final int REQUEST_CODE_NEWPAY = 3001;
@@ -60,25 +55,21 @@ public class NewPaySDK {
 
     /**
      * @param context context
-     * @param appKey appkey for third application
      * @param appid app id which registered in newton api.
      */
-    public static void init(Application context, String appKey, String appid) {
+    public static void init(Application context, String appid) {
         mApplication = context;
-        privateKey = appKey;
         appId = appid;
         gson = new Gson();
     }
 
     /**
      * @param context context
-     * @param appKey appkey for third application
      * @param appid app id which registered in newton api.
      * @param environment eg: Environment.MAINNET, Environment.TESTNET ...
      */
-    public static void init(Application context, String appKey, String appid, Environment environment) {
+    public static void init(Application context, String appid, Environment environment) {
         mApplication = context;
-        privateKey = appKey;
         appId = appid;
         gson = new Gson();
         switch (environment) {
@@ -101,11 +92,11 @@ public class NewPaySDK {
         }
     }
 
-    public static void requestProfile(Activity activity) {
+    public static void requestProfile(Activity activity, SigMessage sigMessage) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.REQUEST_PROFILE);
         intent.putExtra(APPID, appId);
-        intent.putExtra(SIGNATURE, gson.toJson(getSigMessage(privateKey)));
+        intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY);
     }
 
@@ -119,21 +110,21 @@ public class NewPaySDK {
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY_PAY);
     }
 
-    public static void placeOrder(Activity activity, ArrayList<Order> orders) {
+    public static void placeOrder(Activity activity, ArrayList<Order> orders, SigMessage sigMessage) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.PUSH_ORDER);
         intent.putExtra(APPID, appId);
-        intent.putExtra(SIGNATURE, gson.toJson(getSigMessage(privateKey)));
+        intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
         intent.putExtra(CONTENT, gson.toJson(orders));
         checkAndStartActivity(activity, intent, REQUEST_CODE_PUSH_ORDER);
 
     }
 
-    public static void requestProfile(Fragment activity) {
+    public static void requestProfile(Fragment activity, SigMessage sigMessage) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.REQUEST_PROFILE);
         intent.putExtra(APPID, appId);
-        intent.putExtra(SIGNATURE, gson.toJson(getSigMessage(privateKey)));
+        intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY);
     }
 
@@ -147,11 +138,11 @@ public class NewPaySDK {
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY_PAY);
     }
 
-    public static void placeOrder(Fragment activity, ArrayList<Order> orders) {
+    public static void placeOrder(Fragment activity, ArrayList<Order> orders, SigMessage sigMessage) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.PUSH_ORDER);
         intent.putExtra(APPID, appId);
-        intent.putExtra(SIGNATURE, gson.toJson(getSigMessage(privateKey)));
+        intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
         intent.putExtra(CONTENT, gson.toJson(orders));
         checkAndStartActivity(activity, intent, REQUEST_CODE_PUSH_ORDER);
     }
@@ -200,15 +191,5 @@ public class NewPaySDK {
         PackageManager packageManager = mApplication.getPackageManager();
         List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, 0);
         return activities.size() > 0;
-    }
-
-    private static String getMessage() {
-        return System.currentTimeMillis() + new Random().nextInt(1000000) + "";
-    }
-
-    private static SigMessage getSigMessage(String privateKey) {
-        String message = getMessage();
-        Sign.SignatureData sig = Sign.signMessage(message.getBytes(), ECKeyPair.create(Numeric.toBigInt(privateKey)));
-        return new SigMessage(Numeric.toHexString(sig.getR()), Numeric.toHexString(sig.getS()), message);
     }
 }
