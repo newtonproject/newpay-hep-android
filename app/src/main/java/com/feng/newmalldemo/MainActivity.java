@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cellphoneTextView.setText(profileInfo.cellphone);
                 nameTextView.setText(profileInfo.name);
                 newidTextView.setText(profileInfo.newid);
+                Log.e(TAG, "Profile:" + profile);
                 Picasso.get().load(profileInfo.avatarPath).into(imageView);
             }
             if(!TextUtils.isEmpty(sigMessage)) {
