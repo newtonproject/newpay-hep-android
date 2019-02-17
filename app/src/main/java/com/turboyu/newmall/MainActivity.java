@@ -1,4 +1,4 @@
-package com.feng.newmalldemo;
+package com.turboyu.newmall;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.turboyu.newmall.R;
 
 import org.newtonproject.newpay.android.sdk.NewPaySDK;
 import org.newtonproject.newpay.android.sdk.bean.Currency;
@@ -28,7 +29,6 @@ import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.profileLayout:
-                NewPaySDK.requestProfile(this, getSigMessage(privateKey));
+                NewPaySDK.requestProfile(this, getSigMessage(privateKey, privateKey));
                 break;
             case R.id.request20Bt:
                 NewPaySDK.pay(this,"0x920bc30537e3ea976fea09b8a4f025d20e4c674a",BigInteger.valueOf(100));
@@ -133,12 +133,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ArrayList<Order> orders = new ArrayList<>();
         Order order = new Order();
         order.currency = Currency.CNY;
-        order.orderNumber = "orderSingle";
+        order.orderNumber = "orderSingle" + System.currentTimeMillis();
         order.price = 10.2f;
         order.sellerNewid = "NEWID1ab6wnXrhpEbRtH44zrs3wcjqxmbeqU28Zpv64dzahfRvvJq6JRQ";
         order.buyerNewid = profileInfo.newid;
         orders.add(order);
-        NewPaySDK.placeOrder(this, orders, getSigMessage(privateKey));
+        String message = gson.toJson(orders);
+        Log.e(TAG, "Single order:" + message);
+        NewPaySDK.placeOrder(this , getSigMessage(privateKey, message));
     }
 
     private void pushMultiple() {
@@ -150,13 +152,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for(int i = 0; i < 2; i++) {
             Order order = new Order();
             order.currency = Currency.CNY;
-            order.orderNumber = "order" + i;
+            order.orderNumber = "order" + i + System.currentTimeMillis();
             order.price = 10.2f + i;
             order.sellerNewid = "NEWID1ab6wnXrhpEbRtH44zrs3wcjqxmbeqU28Zpv64dzahfRvvJq6JRQ";
             order.buyerNewid = profileInfo.newid;
             datas.add(order);
         }
-        NewPaySDK.placeOrder(this, datas, getSigMessage(privateKey));
+        String message = gson.toJson(datas);
+        Log.e(TAG, "Multiple:" + message);
+        NewPaySDK.placeOrder(this , getSigMessage(privateKey, message));
 
     }
 
@@ -207,13 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
-    private static String getMessage() {
-        return System.currentTimeMillis() + new Random().nextInt(1000000) + "";
-    }
-
-    private static SigMessage getSigMessage(String privateKey) {
-        String message = getMessage();
+    private static SigMessage getSigMessage(String privateKey, String message) {
         Sign.SignatureData sig = Sign.signMessage(message.getBytes(), ECKeyPair.create(Numeric.toBigInt(privateKey)));
         return new SigMessage(Numeric.toHexString(sig.getR()), Numeric.toHexString(sig.getS()), message);
     }

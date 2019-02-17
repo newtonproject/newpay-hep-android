@@ -24,4 +24,9 @@ public class Constant {
         String authorize_pay = "newpay://org.newtonproject.newpay.android.dev.pay";
         String authorize_login_place = "newpay://org.newtonproject.newpay.android.dev.authorize";
     }
+
+    public static final int PROTOCOL_VERSION = 1;
+    public static final String EXTRA_BUNDLE_SOURCE = "BUNDLE_SOURCE";
+    public static final String EXTRA_PROTOCOL_VERSION = "PROTOCOL_VERSION";
+
 }

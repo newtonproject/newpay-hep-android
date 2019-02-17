@@ -1,4 +1,4 @@
-package com.feng.newmalldemo;
+package com.feng.newmall;
 
 import org.junit.Test;
 

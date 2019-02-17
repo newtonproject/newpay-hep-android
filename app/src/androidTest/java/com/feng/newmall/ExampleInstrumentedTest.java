@@ -1,4 +1,4 @@
-package com.feng.newmalldemo;
+package com.feng.newmall;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

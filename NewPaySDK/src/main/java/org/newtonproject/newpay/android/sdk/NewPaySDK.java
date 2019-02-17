@@ -28,6 +28,7 @@ public class NewPaySDK {
     private static Application mApplication;
     private static String appId;
     private static Gson gson;
+
     public static final int REQUEST_CODE_NEWPAY = 3001;
     public static final int REQUEST_CODE_NEWPAY_PAY = 3002;
     public static final int REQUEST_CODE_PUSH_ORDER = 3003;
@@ -97,6 +98,8 @@ public class NewPaySDK {
         intent.putExtra(ACTION, Action.REQUEST_PROFILE);
         intent.putExtra(APPID, appId);
         intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
+        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getPackageName());
+        intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY);
     }
 
@@ -106,16 +109,18 @@ public class NewPaySDK {
         intent.putExtra(SYMBOL, unitStr);
         intent.putExtra(ADDRESS, address);
         intent.putExtra(AMOUNT, account.toString(10));
-        intent.putExtra(SOURCE, activity.getPackageName());
+        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getPackageName());
+        intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY_PAY);
     }
 
-    public static void placeOrder(Activity activity, ArrayList<Order> orders, SigMessage sigMessage) {
+    public static void placeOrder(Activity activity,  SigMessage sigMessage) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.PUSH_ORDER);
         intent.putExtra(APPID, appId);
         intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
-        intent.putExtra(CONTENT, gson.toJson(orders));
+        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getPackageName());
+        intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
         checkAndStartActivity(activity, intent, REQUEST_CODE_PUSH_ORDER);
 
     }
@@ -125,6 +130,8 @@ public class NewPaySDK {
         intent.putExtra(ACTION, Action.REQUEST_PROFILE);
         intent.putExtra(APPID, appId);
         intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
+        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getActivity().getPackageName());
+        intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY);
     }
 
@@ -134,16 +141,18 @@ public class NewPaySDK {
         intent.putExtra(SYMBOL, unitStr);
         intent.putExtra(ADDRESS, address);
         intent.putExtra(AMOUNT, account.toString(10));
-        intent.putExtra(SOURCE, activity.getContext().getPackageName());
+        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getActivity().getPackageName());
+        intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY_PAY);
     }
 
-    public static void placeOrder(Fragment activity, ArrayList<Order> orders, SigMessage sigMessage) {
+    public static void placeOrder(Fragment activity, SigMessage sigMessage) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.PUSH_ORDER);
         intent.putExtra(APPID, appId);
         intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
-        intent.putExtra(CONTENT, gson.toJson(orders));
+        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getActivity().getPackageName());
+        intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
         checkAndStartActivity(activity, intent, REQUEST_CODE_PUSH_ORDER);
     }
 
