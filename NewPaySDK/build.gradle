@@ -5,7 +5,7 @@ apply plugin: "com.novoda.bintray-release"
 publish {
     userOrg = 'xiawu'
     groupId = 'org.newtonproject.newpay.sdk'
-    artifactId = 'NewPaySDK'
+    artifactId = 'newpay'
     publishVersion = '1.0.4'
     desc = 'NewPaySDK for jointly login and place order information.'
     website = 'https://github.com/newtonproject/NewPaySDK-Android'
