@@ -2,10 +2,10 @@
 
 # 1.add gradle dependency on your app build.gradle
 ```
-必须添加
+sdk core.
 implementation 'org.newtonproject.newpay.sdk:newpay:1.0.5'
 
-Demo 中使用签名所使用的包，签名信息必须由服务端完成。
+The signaure tools in Demo. On product environment, the signaure information must from server. 
 implementation files('libs/crypto-3.3.1-android.jar')
 implementation files('libs/utils-3.3.1-android.jar')
 implementation 'com.madgag.spongycastle:core:1.58.0.0'
@@ -76,7 +76,9 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
 - 2019.2.12 1.0.0 add multiple environment init for NewMall.
 
 - 2019.2.15 1.0.2
+> Delete the initialize's parameter(PrivateKey)
+> Change the funcation name: NewPayApi -> NewPaySDK.
 
-> 删除初始化参数(PrivateKey), 添加方法参数(SigMessage). 建议服务端进行签名，客户端不要存放私钥.
+- 2019.2.18 1.0.5
+> Update procotol check. and package name check.
 
-> 更改方法名 NewPayApi -> NewPaySDK.
