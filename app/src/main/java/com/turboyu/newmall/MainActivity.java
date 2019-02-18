@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private static final int REQUEST_CODE_NEWPAY = 1000;
-    private static final String privateKey = "0xbc6162af5677bc108fc227a1b1178aede933d05979cc5c6154078c2eae068dac";
+    private static final String privateKey = "0x298b9bee0a0431e8f1a81323df6810b72467db21f9c252cb6d134d149005a386";
     private static final String publicKey = "0xe5f001b70a3911c1b6dcb857add080beab3ceff7278a012678dbb7e869c787cfd5739cf980adebd59a826eb78eb4d10e746a1fadb49f0245a87270d5a817cda0";
     Gson gson = new Gson();
     private Button request20Bt;
