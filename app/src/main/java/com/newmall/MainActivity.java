@@ -1,4 +1,4 @@
-package com.turboyu.newmall;
+package com.newmall;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.turboyu.newmall.R;
 
 import org.newtonproject.newpay.android.sdk.NewPaySDK;
 import org.newtonproject.newpay.android.sdk.bean.Currency;
@@ -159,9 +158,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             datas.add(order);
         }
         String message = gson.toJson(datas);
-        Log.e(TAG, "Multiple:" + message);
-        NewPaySDK.placeOrder(this , getSigMessage(privateKey, message));
-
+        SigMessage sigMessage = getSigMessage(privateKey, message);
+        Log.e(TAG, "Multiple:" + sigMessage.toString());
+        NewPaySDK.placeOrder(this , sigMessage);
     }
 
     @Override

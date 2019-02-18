@@ -1,4 +1,4 @@
-package com.turboyu.newmall;
+package com.newmall;
 
 import android.support.v4.app.Fragment;
 
