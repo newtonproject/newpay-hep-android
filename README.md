@@ -2,7 +2,10 @@
 
 # 1.add gradle dependency on your app build.gradle
 ```
-implementation 'org.newtonproject.newpay.android.sdk:NewPaySDK:1.0.2'
+必须添加
+implementation 'org.newtonproject.newpay.sdk:newpay:1.0.5'
+
+Demo 中使用签名所使用的包，签名信息必须由服务端完成。
 implementation files('libs/crypto-3.3.1-android.jar')
 implementation files('libs/utils-3.3.1-android.jar')
 implementation 'com.madgag.spongycastle:core:1.58.0.0'
@@ -62,7 +65,7 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
 
 # 5. request push order
 ```
-  NewPaySDK.placeOrder(Activity activity, ArrayList<Order> orders, SigMessage sigMessage);
+  NewPaySDK.placeOrder(Activity activity, SigMessage sigMessage);
 
 ```
 
