@@ -28,5 +28,7 @@ public class Constant {
     public static final int PROTOCOL_VERSION = 1;
     public static final String EXTRA_BUNDLE_SOURCE = "BUNDLE_SOURCE";
     public static final String EXTRA_PROTOCOL_VERSION = "PROTOCOL_VERSION";
+    public static final String EXTRA_SCOPE = "SCOPE";
+    public static final int SCOPE_PROFILE = 1;
 
 }

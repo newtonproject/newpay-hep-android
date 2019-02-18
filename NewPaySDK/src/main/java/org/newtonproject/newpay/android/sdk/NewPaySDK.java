@@ -100,6 +100,7 @@ public class NewPaySDK {
         intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
         intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getPackageName());
         intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
+        intent.putExtra(Constant.EXTRA_SCOPE, Constant.SCOPE_PROFILE);
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY);
     }
 
@@ -132,6 +133,7 @@ public class NewPaySDK {
         intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
         intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getActivity().getPackageName());
         intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
+        intent.putExtra(Constant.EXTRA_SCOPE, Constant.SCOPE_PROFILE);
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY);
     }
 
