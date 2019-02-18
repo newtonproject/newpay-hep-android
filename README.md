@@ -73,12 +73,17 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
 
 ### Change log
 
-- 2019.2.12 1.0.0 add multiple environment init for NewMall.
+- 2019.2.12 1.0.0 
+
+> add multiple environment init for NewMall.
 
 - 2019.2.15 1.0.2
+
 > Delete the initialize's parameter(PrivateKey)
+
 > Change the funcation name: NewPayApi -> NewPaySDK.
 
 - 2019.2.18 1.0.5
+
 > Update procotol check. and package name check.
 
