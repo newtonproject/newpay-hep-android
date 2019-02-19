@@ -33,8 +33,6 @@ public class NewPaySDK {
     public static final int REQUEST_CODE_NEWPAY_PAY = 3002;
     public static final int REQUEST_CODE_PUSH_ORDER = 3003;
 
-    private static final String TESTNET_SHARE_URL = "https://developer.newtonproject.org/testnet/newpay/download";
-    private static final String RELEASE_SHARE_URL = "https://developer.newtonproject.org/release/newpay/download";
 
     private static final String ACTION = "ACTION";
     private static final String APPID = "APPID";
@@ -47,7 +45,7 @@ public class NewPaySDK {
     private static final String SOURCE = "REQUEST_PAY_SOURCE";
 
 
-    private static String SHARE_URL = RELEASE_SHARE_URL;
+    private static String SHARE_URL = Constant.MainNet.share_url;
     private static String authorize_pay = Constant.MainNet.authorize_pay;
     private static String authorize_login_place = Constant.MainNet.authorize_login_place;
 
@@ -77,18 +75,22 @@ public class NewPaySDK {
             case DEVNET:
                 authorize_pay = Constant.DevNet.authorize_pay;
                 authorize_login_place = Constant.DevNet.authorize_login_place;
+                SHARE_URL = Constant.DevNet.share_url;
                 break;
             case BETANET:
                 authorize_pay = Constant.BetaNet.authorize_pay;
                 authorize_login_place = Constant.BetaNet.authorize_login_place;
+                SHARE_URL = Constant.BetaNet.share_url;
                 break;
             case TESTNET:
                 authorize_pay = Constant.TestNet.authorize_pay;
                 authorize_login_place = Constant.TestNet.authorize_login_place;
+                SHARE_URL = Constant.TestNet.share_url;
                 break;
             case MAINNET:
                 authorize_pay = Constant.MainNet.authorize_pay;
                 authorize_login_place = Constant.MainNet.authorize_login_place;
+                SHARE_URL = Constant.MainNet.share_url;
                 break;
         }
     }
