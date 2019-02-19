@@ -3,7 +3,7 @@
 # 1.add gradle dependency on your app build.gradle
 ```
 sdk core.
-implementation 'org.newtonproject.newpay.sdk:newpay:1.0.5'
+implementation 'org.newtonproject.newpay.sdk:newpay:1.0.6'
 
 The signaure tools in Demo. On product environment, the signaure information must from server. 
 implementation files('libs/crypto-3.3.1-android.jar')
@@ -88,5 +88,5 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
 > Update procotol check. and package name check.
 
 - 2019.2.19 1.0.6
- 
+
 > Add multiple environment NewPay's download url.
