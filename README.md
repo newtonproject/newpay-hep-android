@@ -87,3 +87,6 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
 
 > Update procotol check. and package name check.
 
+- 2019.2.19 1.0.6
+ 
+> Add multiple environment NewPay's download url.
