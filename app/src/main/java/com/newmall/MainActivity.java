@@ -39,6 +39,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView imageView;
     private String TAG = "Activity";
 
+    private static final String ERROR_CODE = "ERROR_CODE";
+    private static final String ERROR_MESSAGE = "ERROR_MESSAGE";
+
+
     TextView dev;
     TextView beta;
     TextView testnet;
@@ -169,49 +173,69 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(data == null) return;
 
-        if(resultCode == RESULT_CANCELED){
-            Toast.makeText(this, "User canceled", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String error = data.getStringExtra("error");
-        if(!TextUtils.isEmpty(error)) {
-            Toast.makeText(this, error, Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
-            String profile = data.getStringExtra("profile");
-            String sigMessage = data.getStringExtra("signature");
-
-            if(!TextUtils.isEmpty(profile)){
-                profileInfo = gson.fromJson(profile, ProfileInfo.class);
-                cellphoneTextView.setText(profileInfo.cellphone);
-                nameTextView.setText(profileInfo.name);
-                newidTextView.setText(profileInfo.newid);
-                Log.e(TAG, "Profile:" + profile);
-                Picasso.get().load(profileInfo.avatarPath).into(imageView);
+        if(resultCode == RESULT_OK) {
+            int errorCode = data.getIntExtra(ERROR_CODE, 0);
+            String errorMessage = data.getStringExtra(ERROR_MESSAGE);
+            if(errorCode != 1) {
+                Log.e(TAG, "error_code is: " + errorCode);
+                Log.e(TAG, "ErrorMessage is:" + errorMessage);
+                return;
             }
-            if(!TextUtils.isEmpty(sigMessage)) {
-                SigMessage sig = gson.fromJson(sigMessage, SigMessage.class);
-                Log.e(TAG, "onActivityResult: " + sig.toString());
+            if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
+
+                String profile = data.getStringExtra("profile");
+                String sigMessage = data.getStringExtra("signature");
+
+                if(!TextUtils.isEmpty(profile)){
+                    profileInfo = gson.fromJson(profile, ProfileInfo.class);
+                    cellphoneTextView.setText(profileInfo.cellphone);
+                    nameTextView.setText(profileInfo.name);
+                    newidTextView.setText(profileInfo.newid);
+                    Log.e(TAG, "Profile:" + profile);
+                    if(!TextUtils.isEmpty(profileInfo.avatarPath)) {
+                        Picasso.get().load(profileInfo.avatarPath).into(imageView);
+                    }
+                }
+                if(!TextUtils.isEmpty(sigMessage)) {
+                    SigMessage sig = gson.fromJson(sigMessage, SigMessage.class);
+                    Log.e(TAG, "onActivityResult: " + sig.toString());
+                }
+            }
+
+            // pay result
+            if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
+                String txid = data.getStringExtra("txid");
+                Toast.makeText(this, "txid is:" + txid, Toast.LENGTH_SHORT).show();
+            }
+
+            if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
+                Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
             }
         }
 
-        // pay result
-        if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY && resultCode == RESULT_OK){
-            String txid = data.getStringExtra("txid");
-            Toast.makeText(this, "txid is:" + txid, Toast.LENGTH_SHORT).show();
-        }
-
-        if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER && resultCode == RESULT_OK) {
-            String result = data.getStringExtra("result");
-            Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
-        }
     }
 
     private static SigMessage getSigMessage(String privateKey, String message) {
         Sign.SignatureData sig = Sign.signMessage(message.getBytes(), ECKeyPair.create(Numeric.toBigInt(privateKey)));
         return new SigMessage(Numeric.toHexString(sig.getR()), Numeric.toHexString(sig.getS()), message);
+    }
+
+    public class ErrorCode {
+        static final int SUCCESS = 1;
+
+        static final int CANCEL = 2;
+
+        static final int NO_NEWPAY = 100;
+        static final int NO_PROFILE = 101;
+        static final int NO_BUNDLE_SOURCE = 102;
+        static final int SIGNATURE_ERROR = 103;
+        static final int SELLER_NEWID_ERROR = 104;
+        static final int PROTOCOL_VERSION_LOW = 105;
+        static final int NO_ACTION = 106;
+        static final int APPID_ERROR = 107;
+        static final int NO_ORDER_INFO = 108;
+        static final int NEWID_ERROR = 109;
+        static final int NO_WALLET = 110;
+        static final int UNKNOWN_ERROR = 1000;
     }
 }

@@ -90,3 +90,7 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY && resultCode == RESULT_OK) {
 - 2019.2.19 1.0.6
 
 > Add multiple environment NewPay's download url.
+
+- 2019.2.20
+
+> Add error code and error message for new mall.
