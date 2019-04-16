@@ -53,12 +53,10 @@ NewPaySDK.requestProfile(Activity activity);
 	if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY && resultCode == RESULT_CANCELED){
         //Treat error
 }
-
 ```
 
 ## 4. Request Push Order
 
 ```java
   NewPaySDK.placeOrder(Activity activity, SigMessage sigMessage);
-
 ```
