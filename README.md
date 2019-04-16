@@ -1,6 +1,6 @@
 ﻿# NewPaySDK Android Documentation
 
-# 1.Dependencies
+## 1.Dependencies
 
 Add the dependencies to your app-level `build.gradle` file.
 
@@ -15,7 +15,7 @@ implementation 'com.madgag.spongycastle:core:1.58.0.0'
 implementation "com.madgag.spongycastle:prov:1.58.0.0"
 ```
 
-# 2. Init NewPaySDK
+## 2. Init NewPaySDK
 
 ```java
 // in release environment
@@ -25,7 +25,7 @@ NewPaySDK.init(getApplication(), $yourAppId);
 NewPaySDK.init(getApplication(), $yourAppId, Environment.DEVNET);
 ```
 
-# 3. Get Profile and Sigmessage
+## 3. Get Profile and Sigmessage
 
 To get the profile information, call the requestProfile function and catch the result in `onActivityResult`.
 In any case the SDK returns the requestCode `NewPaySDK.REQUEST_CODE_NEWPAY`.
@@ -56,7 +56,7 @@ NewPaySDK.requestProfile(Activity activity);
 
 ```
 
-# 4. Request Push Order
+## 4. Request Push Order
 
 ```java
   NewPaySDK.placeOrder(Activity activity, SigMessage sigMessage);
