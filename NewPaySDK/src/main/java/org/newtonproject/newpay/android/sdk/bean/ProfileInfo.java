@@ -15,8 +15,6 @@ public class ProfileInfo {
     public String avatarPath;
     @SerializedName("name")
     public String name;
-    @SerializedName("access_key")
-    public String access_key;
     @SerializedName("wallet_address")
     public String address;
 
@@ -30,7 +28,6 @@ public class ProfileInfo {
                 ", inviteCode='" + inviteCode + '\'' +
                 ", avatarPath='" + avatarPath + '\'' +
                 ", name='" + name + '\'' +
-                ", access_key='" + access_key + '\'' +
                 ", address='" + address + '\'' +
                 '}';
     }

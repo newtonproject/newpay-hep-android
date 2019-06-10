@@ -14,19 +14,19 @@ import android.support.v4.app.Fragment;
 import com.google.gson.Gson;
 
 import org.newtonproject.newpay.android.sdk.bean.Action;
-import org.newtonproject.newpay.android.sdk.bean.Order;
-import org.newtonproject.newpay.android.sdk.bean.SigMessage;
+import org.newtonproject.newpay.android.sdk.bean.NewAuthLogin;
+import org.newtonproject.newpay.android.sdk.bean.NewAuthPay;
+import org.newtonproject.newpay.android.sdk.bean.NewAuthProof;
 import org.newtonproject.newpay.android.sdk.constant.Constant;
 import org.newtonproject.newpay.android.sdk.constant.Environment;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 public class NewPaySDK {
 
     private static Application mApplication;
-    private static String appId;
+    private static String dAppId;
     private static Gson gson;
 
     public static final int REQUEST_CODE_NEWPAY = 3001;
@@ -37,13 +37,6 @@ public class NewPaySDK {
     private static final String ACTION = "ACTION";
     private static final String APPID = "APPID";
     private static final String CONTENT = "CONTENT";
-    private static final String SIGNATURE = "SIGNATURE";
-
-    private static final String SYMBOL = "SYMBOL";
-    private static final String ADDRESS = "ADDRESS";
-    private static final String AMOUNT = "AMOUNT";
-    private static final String SOURCE = "REQUEST_PAY_SOURCE";
-
 
     private static String SHARE_URL = Constant.MainNet.share_url;
     private static String authorize_pay = Constant.MainNet.authorize_pay;
@@ -54,22 +47,22 @@ public class NewPaySDK {
 
     /**
      * @param context context
-     * @param appid app id which registered in newton api.
+     * @param dAppId app id which registered in newton api.
      */
-    public static void init(Application context, String appid) {
+    public static void init(Application context, String dAppId) {
         mApplication = context;
-        appId = appid;
+        NewPaySDK.dAppId = dAppId;
         gson = new Gson();
     }
 
     /**
      * @param context context
-     * @param appid app id which registered in newton api.
+     * @param dAppId app id which registered in newton api.
      * @param environment eg: Environment.MAINNET, Environment.TESTNET ...
      */
-    public static void init(Application context, String appid, Environment environment) {
+    public static void init(Application context, String dAppId, Environment environment) {
         mApplication = context;
-        appId = appid;
+        NewPaySDK.dAppId = dAppId;
         gson = new Gson();
         switch (environment) {
             case DEVNET:
@@ -95,69 +88,61 @@ public class NewPaySDK {
         }
     }
 
-    public static void requestProfile(Activity activity, SigMessage sigMessage) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
-        intent.putExtra(ACTION, Action.REQUEST_PROFILE);
-        intent.putExtra(APPID, appId);
-        intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
-        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getPackageName());
-        intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
-        intent.putExtra(Constant.EXTRA_SCOPE, Constant.SCOPE_PROFILE);
+    public static void requestProfile(Activity activity, NewAuthLogin params) {
+        Intent intent = getRequestProfileIntent(params, activity);
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY);
     }
 
-    public static void pay(Activity activity, String address, BigInteger account){
-        String unitStr = "NEW";
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_pay));
-        intent.putExtra(SYMBOL, unitStr);
-        intent.putExtra(ADDRESS, address);
-        intent.putExtra(AMOUNT, account.toString(10));
-        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getPackageName());
-        intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
-        checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY_PAY);
+    public static void requestProfile(Fragment fragment, NewAuthLogin params) {
+        Intent intent = getRequestProfileIntent(params, fragment.getContext());
+        checkAndStartActivity(fragment, intent, REQUEST_CODE_NEWPAY);
     }
 
-    public static void placeOrder(Activity activity,  SigMessage sigMessage) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
-        intent.putExtra(ACTION, Action.PUSH_ORDER);
-        intent.putExtra(APPID, appId);
-        intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
-        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getPackageName());
-        intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
-        checkAndStartActivity(activity, intent, REQUEST_CODE_PUSH_ORDER);
-
-    }
-
-    public static void requestProfile(Fragment activity, SigMessage sigMessage) {
+    private static Intent getRequestProfileIntent(NewAuthLogin params, Context context) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.REQUEST_PROFILE);
-        intent.putExtra(APPID, appId);
-        intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
-        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getActivity().getPackageName());
-        intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
-        intent.putExtra(Constant.EXTRA_SCOPE, Constant.SCOPE_PROFILE);
-        checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY);
+        intent.putExtra(APPID, dAppId);
+        intent.putExtra(CONTENT, gson.toJson(params));
+        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, context.getPackageName());
+        return intent;
     }
 
-    public static void pay(Fragment activity, String address, BigInteger account){
-        String unitStr = "NEW";
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_pay));
-        intent.putExtra(SYMBOL, unitStr);
-        intent.putExtra(ADDRESS, address);
-        intent.putExtra(AMOUNT, account.toString(10));
-        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getActivity().getPackageName());
-        intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
+    public static void pay(Activity activity, NewAuthPay params){
+        Intent intent = getRequestPayIntent(params, activity);
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY_PAY);
     }
 
-    public static void placeOrder(Fragment activity, SigMessage sigMessage) {
+    public static void pay(Fragment fragment, NewAuthPay params){
+        Intent intent = getRequestPayIntent(params, fragment.getContext());
+        checkAndStartActivity(fragment, intent, REQUEST_CODE_NEWPAY_PAY);
+    }
+
+    private static Intent getRequestPayIntent(NewAuthPay params, Context context) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_pay));
+        intent.putExtra(ACTION, Action.REQUEST_PAY);
+        intent.putExtra(APPID, dAppId);
+        intent.putExtra(CONTENT, gson.toJson(params));
+        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, context.getPackageName());
+        return intent;
+    }
+
+    public static void placeOrder(Activity activity,  NewAuthProof params) {
+        Intent intent = getRequestProofIntent(params, activity);
+        checkAndStartActivity(activity, intent, REQUEST_CODE_PUSH_ORDER);
+    }
+
+    public static void placeOrder(Fragment fragment,  NewAuthProof params) {
+        Intent intent = getRequestProofIntent(params, fragment.getContext());
+        checkAndStartActivity(fragment, intent, REQUEST_CODE_PUSH_ORDER);
+    }
+
+    private static Intent getRequestProofIntent(NewAuthProof params, Context context) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.PUSH_ORDER);
-        intent.putExtra(APPID, appId);
-        intent.putExtra(SIGNATURE, gson.toJson(sigMessage));
-        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, activity.getActivity().getPackageName());
-        intent.putExtra(Constant.EXTRA_PROTOCOL_VERSION, Constant.PROTOCOL_VERSION);
-        checkAndStartActivity(activity, intent, REQUEST_CODE_PUSH_ORDER);
+        intent.putExtra(APPID, dAppId);
+        intent.putExtra(CONTENT, gson.toJson(params));
+        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, context.getPackageName());
+        return intent;
     }
 
     private static void checkAndStartActivity(Activity activity, Intent intent, int requestCode) {

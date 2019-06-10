@@ -14,20 +14,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newmall.server.Request;
 import com.squareup.picasso.Picasso;
 
 import org.newtonproject.newpay.android.sdk.NewPaySDK;
-import org.newtonproject.newpay.android.sdk.bean.Currency;
-import org.newtonproject.newpay.android.sdk.bean.Order;
+import org.newtonproject.newpay.android.sdk.bean.ConfirmProof;
+import org.newtonproject.newpay.android.sdk.bean.HepProfile;
 import org.newtonproject.newpay.android.sdk.bean.ProfileInfo;
-import org.newtonproject.newpay.android.sdk.bean.SigMessage;
 import org.newtonproject.newpay.android.sdk.constant.Environment;
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Sign;
-import org.web3j.utils.Numeric;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -49,6 +43,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView mainnet;
     TextView evn;
 
+    //Profile key
+    private static final String SIGNED_PROFILE = "SIGNED_PROFILE";
+    private static final String SIGNED_PROOF = "SIGNED_PROOF";
+
+    private HepProfile hepProfile;
+    private ProfileInfo profileInfo;
 
     private static final int REQUEST_CODE_NEWPAY = 1000;
     private static final String privateKey = "0x298b9bee0a0431e8f1a81323df6810b72467db21f9c252cb6d134d149005a386";
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button request20Bt;
     private Button single;
     private Button multiple;
-    private ProfileInfo profileInfo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,13 +95,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.profileLayout:
-                NewPaySDK.requestProfile(this, getSigMessage(privateKey, privateKey));
+                NewPaySDK.requestProfile(this, Request.authLogin());
                 break;
             case R.id.request20Bt:
-                NewPaySDK.pay(this,"0x920bc30537e3ea976fea09b8a4f025d20e4c674a",BigInteger.valueOf(100));
+                NewPaySDK.pay(this, Request.authPay("orderNumber", "20"));
                 break;
             case R.id.pushMultiple:
-                pushMultiple();
+                pushSingle();
                 break;
             case R.id.pushSingle:
                 pushSingle();
@@ -129,43 +129,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void pushSingle() {
-        if(profileInfo == null) {
-            Toast.makeText(this, "Profile newid is null", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        ArrayList<Order> orders = new ArrayList<>();
-        Order order = new Order();
-        order.currency = Currency.CNY;
-        order.orderNumber = "orderSingle" + System.currentTimeMillis();
-        order.price = 10.2f;
-        order.sellerNewid = "NEWID1ab6wnXrhpEbRtH44zrs3wcjqxmbeqU28Zpv64dzahfRvvJq6JRQ";
-        order.buyerNewid = profileInfo.newid;
-        orders.add(order);
-        String message = gson.toJson(orders);
-        Log.e(TAG, "Single order:" + message);
-        NewPaySDK.placeOrder(this , getSigMessage(privateKey, message));
+        NewPaySDK.placeOrder(this , Request.authProof());
     }
 
-    private void pushMultiple() {
-        ArrayList<Order> datas = new ArrayList<>();
-        if(profileInfo == null) {
-            Toast.makeText(this, "Profile newid is null", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        for(int i = 0; i < 2; i++) {
-            Order order = new Order();
-            order.currency = Currency.CNY;
-            order.orderNumber = "order" + i + System.currentTimeMillis();
-            order.price = 10.2f + i;
-            order.sellerNewid = "NEWID1ab6wnXrhpEbRtH44zrs3wcjqxmbeqU28Zpv64dzahfRvvJq6JRQ";
-            order.buyerNewid = profileInfo.newid;
-            datas.add(order);
-        }
-        String message = gson.toJson(datas);
-        SigMessage sigMessage = getSigMessage(privateKey, message);
-        Log.e(TAG, "Multiple:" + sigMessage.toString());
-        NewPaySDK.placeOrder(this , sigMessage);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -183,22 +149,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
 
-                String profile = data.getStringExtra("profile");
-                String sigMessage = data.getStringExtra("signature");
+                String profile = data.getStringExtra(SIGNED_PROFILE);
 
                 if(!TextUtils.isEmpty(profile)){
-                    profileInfo = gson.fromJson(profile, ProfileInfo.class);
+                    hepProfile = gson.fromJson(profile, HepProfile.class);
+                    profileInfo = hepProfile.getProfileInfo();
+
                     cellphoneTextView.setText(profileInfo.cellphone);
                     nameTextView.setText(profileInfo.name);
                     newidTextView.setText(profileInfo.newid);
-                    Log.e(TAG, "Profile:" + profile);
+                    Log.e(TAG, "Profile:" + profileInfo);
                     if(!TextUtils.isEmpty(profileInfo.avatarPath)) {
                         Picasso.get().load(profileInfo.avatarPath).into(imageView);
                     }
-                }
-                if(!TextUtils.isEmpty(sigMessage)) {
-                    SigMessage sig = gson.fromJson(sigMessage, SigMessage.class);
-                    Log.e(TAG, "onActivityResult: " + sig.toString());
                 }
             }
 
@@ -209,15 +172,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
-                Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
+                String res = data.getStringExtra(SIGNED_PROOF);
+                ConfirmProof proof = gson.fromJson(res, ConfirmProof.class);
+                Toast.makeText(this, proof.toString(), Toast.LENGTH_SHORT).show();
             }
         }
 
-    }
-
-    private static SigMessage getSigMessage(String privateKey, String message) {
-        Sign.SignatureData sig = Sign.signMessage(message.getBytes(), ECKeyPair.create(Numeric.toBigInt(privateKey)));
-        return new SigMessage(Numeric.toHexString(sig.getR()), Numeric.toHexString(sig.getS()), message);
     }
 
     public class ErrorCode {
