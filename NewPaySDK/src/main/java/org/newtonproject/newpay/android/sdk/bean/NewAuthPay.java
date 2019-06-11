@@ -38,7 +38,7 @@ public class NewAuthPay {
     @SerializedName("broker")
     public String broker;
 
-    @SerializedName("signType")
+    @SerializedName("sign_type")
     public String signType;
     @SerializedName("signature")
     public String signature;

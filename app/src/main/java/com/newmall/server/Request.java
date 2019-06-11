@@ -22,7 +22,7 @@ import java.util.Map;
  * @copyright (c) 2018 Newton Foundation. All rights reserved.
  */
 public class Request {
-    private static final String privateKey = "0x298b9bee0a0431e8f1a81323df6810b72467db21f9c252cb6d134d149005a386";
+    private static final String privateKey = "0xfd216818cecbc78c0aeb274521b1501a01a2226a23a9a6922abb824b12dd86c4";
     private static final String SIGN_TYPE = "secp256r1";
 
     public static NewAuthLogin authLogin() {
@@ -123,12 +123,12 @@ public class Request {
         map.put("version", "1.0");
         map.put("ts", System.currentTimeMillis() + "");
         map.put("nonce", "randomString");
-        map.put("environment", "devnet"); // devnet, testnet, mainnet
         return map;
     }
 
     private static String sign(HashMap<String, String> map) {
         String message = sortParameters(map);
+        System.out.println("sig message:" + message);
         return getSignature(privateKey, message);
     }
 

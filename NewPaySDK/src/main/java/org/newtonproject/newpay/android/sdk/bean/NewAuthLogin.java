@@ -28,7 +28,7 @@ public class NewAuthLogin {
     @SerializedName("memo")
     public String memo;
 
-    @SerializedName("signType")
+    @SerializedName("sign_type")
     public String signType;
     @SerializedName("signature")
     public String signature;

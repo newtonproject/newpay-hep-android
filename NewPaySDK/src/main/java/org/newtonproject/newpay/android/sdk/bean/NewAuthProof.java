@@ -26,7 +26,7 @@ public class NewAuthProof {
     @SerializedName("proof_hash")
     public String proofHash;
 
-    @SerializedName("signType")
+    @SerializedName("sign_type")
     public String signType;
     @SerializedName("signature")
     public String signature;
