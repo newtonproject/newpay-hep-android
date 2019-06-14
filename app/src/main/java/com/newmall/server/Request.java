@@ -118,7 +118,7 @@ public class Request {
 
     private static HashMap<String, String> getBaseParams() {
         HashMap<String, String> map = new HashMap<>();
-        map.put("dapp_id", "YourDappId");
+        map.put("dapp_id", "05e6e4bbd71f4ab8ac382f8c0ccb8d0b");
         map.put("protocol", "HEP");
         map.put("version", "1.0");
         map.put("ts", System.currentTimeMillis() + "");

@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Profile key
     private static final String SIGNED_PROFILE = "SIGNED_PROFILE";
     private static final String SIGNED_PROOF = "SIGNED_PROOF";
-
+    private static final String dappId = "05e6e4bbd71f4ab8ac382f8c0ccb8d0b";
     private HepProfile hepProfile;
     private ProfileInfo profileInfo;
 
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        NewPaySDK.init(getApplication(), "9a674d65c945569a9071b31b07f3bc52");
+        NewPaySDK.init(getApplication(), dappId);
     }
 
     private void initView() {
@@ -108,22 +108,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.dev:
                 evn.setText("Dev");
-                NewPaySDK.init(getApplication(), "9a674d65c945569a9071b31b07f3bc52", Environment.DEVNET);
+                NewPaySDK.init(getApplication(), dappId, Environment.DEVNET);
 
                 break;
             case R.id.beta:
                 evn.setText("Beta");
-                NewPaySDK.init(getApplication(), "9a674d65c945569a9071b31b07f3bc52", Environment.BETANET);
+                NewPaySDK.init(getApplication(), dappId, Environment.BETANET);
 
                 break;
             case R.id.testnet:
                 evn.setText("testnet");
-                NewPaySDK.init(getApplication(), "9a674d65c945569a9071b31b07f3bc52", Environment.TESTNET);
+                NewPaySDK.init(getApplication(), dappId, Environment.TESTNET);
 
                 break;
             case R.id.mainnet:
                 evn.setText("main");
-                NewPaySDK.init(getApplication(), "9a674d65c945569a9071b31b07f3bc52", Environment.MAINNET);
+                NewPaySDK.init(getApplication(), dappId, Environment.MAINNET);
                 break;
         }
     }
