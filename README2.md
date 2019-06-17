@@ -25,38 +25,52 @@ NewPaySDK.init(getApplication(), $yourAppId);
 NewPaySDK.init(getApplication(), $yourAppId, Environment.DEVNET);
 ```
 
-## 3. Get Profile and Sigmessage
+## 3. Get Profile and SigMessage
 
 To get the profile information, call the requestProfile function and catch the result in `onActivityResult`.
 In any case the SDK returns the requestCode `NewPaySDK.REQUEST_CODE_NEWPAY`.
 
 ```java
-NewPaySDK.requestProfile(Activity activity);
+NewPaySDK.requestProfile(Context context, NewAuthLogin authLogin);
 
-...
-	//RequestCode = NewPaySDK.REQUEST_CODE_NEWPAY
-	if(resultCode == RESULT_OK) {
-            String profile = data.getStringExtra("profile");
-            String sigMessage = data.getStringExtra("signature");
-	}
+---
+if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
+    String profile = data.getStringExtra(SIGNED_PROFILE);
+    if(!TextUtils.isEmpty(profile)){
+        hepProfile = gson.fromJson(profile, HepProfile.class);
+        profileInfo = hepProfile.getProfileInfo();
 
-	if(resultCode == RESULT_CANCELED) {
-        //Treat error
+        cellphoneTextView.setText(profileInfo.cellphone);
+        nameTextView.setText(profileInfo.name);
+        newidTextView.setText(profileInfo.newid);
+        Log.e(TAG, "Profile:" + profileInfo);
+        if(!TextUtils.isEmpty(profileInfo.avatarPath)) {
+            Picasso.get().load(profileInfo.avatarPath).into(imageView);
+        }
     }
-
-	//RequestCode = NewPaySDK.REQUEST_CODE_NEWPAY_PAY
-    if(resultCode == RESULT_OK){
-            if(data != null) {
-                String txid = data.getStringExtra("txid");
-            }
-	}
-	if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY && resultCode == RESULT_CANCELED){
-        //Treat error
 }
 ```
 
-## 4. Request Push Order
+## 4. Request Pay
 
 ```java
-  NewPaySDK.placeOrder(Activity activity, SigMessage sigMessage);
+  NewPaySDK.pay(Activity activity, NewAuthPay pay);
+
+---
+if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
+    String txid = data.getStringExtra("txid");
+    Toast.makeText(this, "txid is:" + txid, Toast.LENGTH_SHORT).show();
+}
+
+```
+## 5. Request submit place order
+
+``` java
+NewPaySDK.placeOrder(this , Request.authProof());
+
+---
+if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
+    String txid = data.getStringExtra("txid");
+    Toast.makeText(this, "txid is:" + txid, Toast.LENGTH_SHORT).show();
+}
 ```
