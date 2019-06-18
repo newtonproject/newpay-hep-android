@@ -21,7 +21,7 @@ public class HttpService{
     private DemoApi demoApi;
 
     private HttpService() {}
-    private String baseUrl = "http://192.168.168.66:8000";
+    private String baseUrl = "http://47.52.170.176:9999";
     private static HttpService instance;
     public static HttpService getInstance() {
         if(instance == null) {
