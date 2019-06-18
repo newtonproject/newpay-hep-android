@@ -26,7 +26,6 @@ import java.util.List;
 public class NewPaySDK {
 
     private static Application mApplication;
-    private static String dAppId;
     private static Gson gson;
 
     public static final int REQUEST_CODE_NEWPAY = 3001;
@@ -47,22 +46,18 @@ public class NewPaySDK {
 
     /**
      * @param context context
-     * @param dAppId app id which registered in newton api.
      */
-    public static void init(Application context, String dAppId) {
+    public static void init(Application context) {
         mApplication = context;
-        NewPaySDK.dAppId = dAppId;
         gson = new Gson();
     }
 
     /**
      * @param context context
-     * @param dAppId app id which registered in newton api.
      * @param environment eg: Environment.MAINNET, Environment.TESTNET ...
      */
-    public static void init(Application context, String dAppId, Environment environment) {
+    public static void init(Application context, Environment environment) {
         mApplication = context;
-        NewPaySDK.dAppId = dAppId;
         gson = new Gson();
         switch (environment) {
             case DEVNET:
@@ -101,7 +96,7 @@ public class NewPaySDK {
     private static Intent getRequestProfileIntent(NewAuthLogin params, Context context) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.REQUEST_PROFILE);
-        intent.putExtra(APPID, dAppId);
+        intent.putExtra(APPID, params.dappId);
         intent.putExtra(CONTENT, gson.toJson(params));
         intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, context.getPackageName());
         return intent;
@@ -120,7 +115,7 @@ public class NewPaySDK {
     private static Intent getRequestPayIntent(NewAuthPay params, Context context) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_pay));
         intent.putExtra(ACTION, Action.REQUEST_PAY);
-        intent.putExtra(APPID, dAppId);
+        intent.putExtra(APPID, params.dappId);
         intent.putExtra(CONTENT, gson.toJson(params));
         intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, context.getPackageName());
         return intent;
@@ -139,7 +134,7 @@ public class NewPaySDK {
     private static Intent getRequestProofIntent(NewAuthProof params, Context context) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
         intent.putExtra(ACTION, Action.PUSH_ORDER);
-        intent.putExtra(APPID, dAppId);
+        intent.putExtra(APPID, params.dappId);
         intent.putExtra(CONTENT, gson.toJson(params));
         intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, context.getPackageName());
         return intent;

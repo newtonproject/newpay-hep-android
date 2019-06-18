@@ -24,7 +24,12 @@ android {
     }
 }
 
-
+project.ext {
+    retrofitVersion = "2.3.0"
+    okhttpVersion = "3.9.0"
+    rxJavaVersion = "2.1.6"
+    rxAndroidVersion = "2.0.1"
+}
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
@@ -39,5 +44,13 @@ dependencies {
     implementation files('libs/utils-3.3.1-android.jar')
     implementation 'com.madgag.spongycastle:core:1.58.0.0'
     implementation "com.madgag.spongycastle:prov:1.58.0.0"
+    implementation "com.squareup.retrofit2:retrofit:$project.retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$project.retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$project.retrofitVersion"
+    implementation "com.squareup.okhttp3:okhttp:$project.okhttpVersion"
+    // ReactiveX
+    implementation "io.reactivex.rxjava2:rxjava:2.1.16"
+    implementation "io.reactivex.rxjava2:rxandroid:$project.rxAndroidVersion"
+
     implementation project(':NewPaySDK')
 }

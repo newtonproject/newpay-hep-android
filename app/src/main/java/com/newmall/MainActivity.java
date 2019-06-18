@@ -1,5 +1,6 @@
 package com.newmall;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,13 +15,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newmall.network.BaseResponse;
+import com.newmall.network.HttpService;
 import com.newmall.server.Request;
 import com.squareup.picasso.Picasso;
 
 import org.newtonproject.newpay.android.sdk.NewPaySDK;
 import org.newtonproject.newpay.android.sdk.bean.HepProfile;
+import org.newtonproject.newpay.android.sdk.bean.NewAuthProof;
 import org.newtonproject.newpay.android.sdk.bean.ProfileInfo;
 import org.newtonproject.newpay.android.sdk.constant.Environment;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -50,12 +58,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ProfileInfo profileInfo;
 
     private static final int REQUEST_CODE_NEWPAY = 1000;
-    private static final String privateKey = "0xfd216818cecbc78c0aeb274521b1501a01a2226a23a9a6922abb824b12dd86c4";
-    private static final String publicKey = "0xb5de35a23f3b21b4c5750d02875af165796e5be673c684e53cf0f022bfe94e5e7df1867816d2869674006e08446bbe6cf21e401545e6e2ee43acc2d20b3ff168";
     Gson gson = new Gson();
     private Button request20Bt;
     private Button single;
     private Button multiple;
+    private MainActivity context;
 
 
     @Override
@@ -64,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initView();
         NewPaySDK.init(getApplication(), dappId);
+        context = this;
     }
 
     private void initView() {
@@ -104,35 +112,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 NewPaySDK.pay(this, Request.authPay(profileInfo.newid,System.currentTimeMillis() + "", "20"));
                 break;
             case R.id.pushMultiple:
-                pushSingle();
+                //pushSingle();
                 break;
             case R.id.pushSingle:
                 pushSingle();
                 break;
             case R.id.dev:
                 evn.setText("Dev");
-                NewPaySDK.init(getApplication(), dappId, Environment.DEVNET);
+                NewPaySDK.init(getApplication(), Environment.DEVNET);
 
                 break;
             case R.id.beta:
                 evn.setText("Beta");
-                NewPaySDK.init(getApplication(), dappId, Environment.BETANET);
+                NewPaySDK.init(getApplication(), Environment.BETANET);
 
                 break;
             case R.id.testnet:
                 evn.setText("testnet");
-                NewPaySDK.init(getApplication(), dappId, Environment.TESTNET);
+                NewPaySDK.init(getApplication(), Environment.TESTNET);
 
                 break;
             case R.id.mainnet:
                 evn.setText("main");
-                NewPaySDK.init(getApplication(), dappId, Environment.MAINNET);
+                NewPaySDK.init(getApplication(), Environment.MAINNET);
                 break;
         }
     }
 
     private void pushSingle() {
-        NewPaySDK.placeOrder(this , Request.authProof());
+        if(profileInfo == null || TextUtils.isEmpty(profileInfo.newid)) {
+            Toast.makeText(context, "Please get profile newid first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Disposable subscribe = HttpService.getInstance().getNewAuthProof(profileInfo.newid)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<BaseResponse<NewAuthProof>>() {
+                               @Override
+                               public void accept(BaseResponse<NewAuthProof> newAuthProofBaseResponse) throws Exception {
+                                    if(newAuthProofBaseResponse.errorCode == 1) {
+                                        NewAuthProof proof = newAuthProofBaseResponse.result;
+                                        NewPaySDK.placeOrder(context , proof);
+                                    } else {
+                                        Toast.makeText(context, newAuthProofBaseResponse.errorMessage, Toast.LENGTH_SHORT).show();
+                                    }
+                               }
+                           },
+                        new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                Toast.makeText(MainActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                );
+
     }
 
 
