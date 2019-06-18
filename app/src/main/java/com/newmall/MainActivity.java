@@ -18,7 +18,6 @@ import com.newmall.server.Request;
 import com.squareup.picasso.Picasso;
 
 import org.newtonproject.newpay.android.sdk.NewPaySDK;
-import org.newtonproject.newpay.android.sdk.bean.ConfirmProof;
 import org.newtonproject.newpay.android.sdk.bean.HepProfile;
 import org.newtonproject.newpay.android.sdk.bean.ProfileInfo;
 import org.newtonproject.newpay.android.sdk.constant.Environment;
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Profile key
     private static final String SIGNED_PROFILE = "SIGNED_PROFILE";
     private static final String SIGNED_PROOF = "SIGNED_PROOF";
-    private static final String dappId = "05e6e4bbd71f4ab8ac382f8c0ccb8d0b";
+    private static final String dappId = "5b796b9b48f74f28b96bcd3ea42f9aaf";
     private HepProfile hepProfile;
     private ProfileInfo profileInfo;
 
@@ -98,7 +97,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 NewPaySDK.requestProfile(this, Request.authLogin());
                 break;
             case R.id.request20Bt:
-                NewPaySDK.pay(this, Request.authPay("orderNumber", "20"));
+                if(profileInfo == null || TextUtils.isEmpty(profileInfo.newid)) {
+                    Toast.makeText(this, "Please get profile first", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                NewPaySDK.pay(this, Request.authPay(profileInfo.newid,System.currentTimeMillis() + "", "20"));
                 break;
             case R.id.pushMultiple:
                 pushSingle();
@@ -145,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(errorCode != 1) {
                 Log.e(TAG, "error_code is: " + errorCode);
                 Log.e(TAG, "ErrorMessage is:" + errorMessage);
+                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
                 return;
             }
             if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
@@ -173,8 +177,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
                 String res = data.getStringExtra(SIGNED_PROOF);
-                ConfirmProof proof = gson.fromJson(res, ConfirmProof.class);
-                Toast.makeText(this, proof.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
             }
         }
 

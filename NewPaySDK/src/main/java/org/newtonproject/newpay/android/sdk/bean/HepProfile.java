@@ -1,6 +1,5 @@
 package org.newtonproject.newpay.android.sdk.bean;
 
-import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -19,11 +18,6 @@ public class HepProfile {
     public Profile profile;
     @SerializedName("signType")
     public String signType; // prime256v1   NIST P-256
-
-    public String getProfileString() {
-        if(profile == null) throw new IllegalStateException("profile can not be null");
-        return new Gson().toJson(profile);
-    }
 
     @Override
     public String toString() {

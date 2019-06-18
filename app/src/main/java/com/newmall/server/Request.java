@@ -24,6 +24,7 @@ import java.util.Map;
 public class Request {
     private static final String privateKey = "0xfd216818cecbc78c0aeb274521b1501a01a2226a23a9a6922abb824b12dd86c4";
     private static final String SIGN_TYPE = "secp256r1";
+    private static final String dappId = "5b796b9b48f74f28b96bcd3ea42f9aaf";
 
     public static NewAuthLogin authLogin() {
         NewAuthLogin params = new NewAuthLogin();
@@ -50,7 +51,7 @@ public class Request {
         return params;
     }
 
-    public static NewAuthPay authPay(String orderNumber, String totalPrice) {
+    public static NewAuthPay authPay(String newid, String orderNumber, String totalPrice) {
         NewAuthPay params = new NewAuthPay();
         HashMap<String, String> map = getBaseParams();
         params.dappId = map.get("dapp_id");
@@ -63,9 +64,9 @@ public class Request {
         String action = Action.REQUEST_PAY;
         String description = "Demo request login";
         String priceCurrency = "NEW";
-        String sellerNewid = "SellerNewID";
-        String customer = "CustomerNewID";
-        String broker = "BrokerNewId";
+        String sellerNewid = newid;
+        String customer = newid;
+        String broker = newid;
 
         params.action = action;
         params.description = description;
@@ -118,11 +119,11 @@ public class Request {
 
     private static HashMap<String, String> getBaseParams() {
         HashMap<String, String> map = new HashMap<>();
-        map.put("dapp_id", "05e6e4bbd71f4ab8ac382f8c0ccb8d0b");
+        map.put("dapp_id", dappId);
         map.put("protocol", "HEP");
         map.put("version", "1.0");
         map.put("ts", System.currentTimeMillis() + "");
-        map.put("nonce", "randomString");
+        map.put("nonce", System.currentTimeMillis() + "");
         return map;
     }
 
