@@ -1,5 +1,7 @@
 package com.newmall.network;
 
+import org.newtonproject.newpay.android.sdk.bean.NewAuthLogin;
+import org.newtonproject.newpay.android.sdk.bean.NewAuthPay;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthProof;
 
 import io.reactivex.Observable;
@@ -47,6 +49,14 @@ public class HttpService{
 
     public Observable<BaseResponse<NewAuthProof>> getNewAuthProof(String newid) {
         return demoApi.getAuthProof(newid).subscribeOn(Schedulers.io());
+    }
+
+    public Observable<BaseResponse<NewAuthLogin>> getNewAuthLogin() {
+        return demoApi.getAuthLogin().subscribeOn(Schedulers.io());
+    }
+
+    public Observable<BaseResponse<NewAuthPay>> getNewAuthPay(String newid) {
+        return demoApi.getAuthPay(newid).subscribeOn(Schedulers.io());
     }
 
 }

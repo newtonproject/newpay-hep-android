@@ -1,6 +1,5 @@
 package com.newmall;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,11 +16,12 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.newmall.network.BaseResponse;
 import com.newmall.network.HttpService;
-import com.newmall.server.Request;
 import com.squareup.picasso.Picasso;
 
 import org.newtonproject.newpay.android.sdk.NewPaySDK;
 import org.newtonproject.newpay.android.sdk.bean.HepProfile;
+import org.newtonproject.newpay.android.sdk.bean.NewAuthLogin;
+import org.newtonproject.newpay.android.sdk.bean.NewAuthPay;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthProof;
 import org.newtonproject.newpay.android.sdk.bean.ProfileInfo;
 import org.newtonproject.newpay.android.sdk.constant.Environment;
@@ -102,14 +102,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.profileLayout:
-                NewPaySDK.requestProfile(this, Request.authLogin());
+                HttpService
+                        .getInstance()
+                        .getNewAuthLogin()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                new Consumer<BaseResponse<NewAuthLogin>>() {
+                                    @Override
+                                    public void accept(BaseResponse<NewAuthLogin> response) throws Exception {
+                                        if(response.errorCode == 1) {
+                                            NewPaySDK.requestProfile(context, response.result);
+                                        }
+                                    }
+                                },
+                                new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        Toast.makeText(context, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                        );
                 break;
             case R.id.request20Bt:
                 if(profileInfo == null || TextUtils.isEmpty(profileInfo.newid)) {
                     Toast.makeText(this, "Please get profile first", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                NewPaySDK.pay(this, Request.authPay(profileInfo.newid,System.currentTimeMillis() + "", "20"));
+                HttpService
+                        .getInstance()
+                        .getNewAuthPay(profileInfo.newid)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                new Consumer<BaseResponse<NewAuthPay>>() {
+                                    @Override
+                                    public void accept(BaseResponse<NewAuthPay> response) throws Exception {
+                                        if(response.errorCode == 1) {
+                                            NewPaySDK.pay(context, response.result);
+                                        }
+                                    }
+                                },
+                                new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        Toast.makeText(context, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                        );
                 break;
             case R.id.pushMultiple:
                 //pushSingle();
@@ -120,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.dev:
                 evn.setText("Dev");
                 NewPaySDK.init(getApplication(), Environment.DEVNET);
-
                 break;
             case R.id.beta:
                 evn.setText("Beta");
