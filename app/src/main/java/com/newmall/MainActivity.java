@@ -19,6 +19,8 @@ import com.newmall.network.HttpService;
 import com.squareup.picasso.Picasso;
 
 import org.newtonproject.newpay.android.sdk.NewPaySDK;
+import org.newtonproject.newpay.android.sdk.bean.ConfirmedPayment;
+import org.newtonproject.newpay.android.sdk.bean.ConfirmedProof;
 import org.newtonproject.newpay.android.sdk.bean.HepProfile;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthLogin;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthPay;
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Profile key
     private static final String SIGNED_PROFILE = "SIGNED_PROFILE";
     private static final String SIGNED_PROOF = "SIGNED_PROOF";
+    private static final String SIGNED_PAY = "SIGNED_PAY";
+
     private static final String dappId = "5b796b9b48f74f28b96bcd3ea42f9aaf";
     private HepProfile profileInfo;
 
@@ -236,13 +240,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             // pay result
             if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
-                String txid = data.getStringExtra("txid");
-                Toast.makeText(this, "txid is:" + txid, Toast.LENGTH_SHORT).show();
+                String res = data.getStringExtra(SIGNED_PAY);
+                ConfirmedPayment payment = gson.fromJson(res, ConfirmedPayment.class);
+                Toast.makeText(this, "txid is:" + payment.txid, Toast.LENGTH_SHORT).show();
             }
 
             if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
                 String res = data.getStringExtra(SIGNED_PROOF);
-                Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
+                ConfirmedProof proof = gson.fromJson(res, ConfirmedProof.class);
+                Toast.makeText(this, proof.proofHash, Toast.LENGTH_SHORT).show();
             }
         }
 
