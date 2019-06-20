@@ -3,6 +3,8 @@ package org.newtonproject.newpay.android.sdk.bean;
 import com.google.gson.annotations.SerializedName;
 
 public class NewAuthPay {
+    @SerializedName("uuid")
+    public String uuid;
     @SerializedName("dapp_id")
     public String dappId;
     @SerializedName("protocol")

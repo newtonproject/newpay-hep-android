@@ -23,7 +23,6 @@ import org.newtonproject.newpay.android.sdk.bean.HepProfile;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthLogin;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthPay;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthProof;
-import org.newtonproject.newpay.android.sdk.bean.ProfileInfo;
 import org.newtonproject.newpay.android.sdk.constant.Environment;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -54,8 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String SIGNED_PROFILE = "SIGNED_PROFILE";
     private static final String SIGNED_PROOF = "SIGNED_PROOF";
     private static final String dappId = "5b796b9b48f74f28b96bcd3ea42f9aaf";
-    private HepProfile hepProfile;
-    private ProfileInfo profileInfo;
+    private HepProfile profileInfo;
 
     private static final int REQUEST_CODE_NEWPAY = 1000;
     Gson gson = new Gson();
@@ -225,9 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String profile = data.getStringExtra(SIGNED_PROFILE);
 
                 if(!TextUtils.isEmpty(profile)){
-                    hepProfile = gson.fromJson(profile, HepProfile.class);
-                    profileInfo = hepProfile.getProfileInfo();
-
+                    profileInfo = gson.fromJson(profile, HepProfile.class);
                     cellphoneTextView.setText(profileInfo.cellphone);
                     nameTextView.setText(profileInfo.name);
                     newidTextView.setText(profileInfo.newid);
