@@ -2,13 +2,6 @@ package org.newtonproject.newpay.android.sdk.bean;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * @author weixuefeng@lubangame.com
- * @version $Rev$
- * @time: 2019-06-10--11:22
- * @description
- * @copyright (c) 2018 Newton Foundation. All rights reserved.
- */
 public class NewAuthLogin {
     @SerializedName("dapp_id")
     public String dappId;
