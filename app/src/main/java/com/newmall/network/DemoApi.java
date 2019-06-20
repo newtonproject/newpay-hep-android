@@ -7,7 +7,6 @@ import org.newtonproject.newpay.android.sdk.bean.NewAuthProof;
 import io.reactivex.Observable;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 /**
@@ -20,12 +19,13 @@ import retrofit2.http.POST;
 public interface DemoApi {
     @POST("get/client/proof/")
     @FormUrlEncoded
-    Observable<BaseResponse<NewAuthProof>> getAuthProof(@Field("newid") String newid);
+    Observable<BaseResponse<NewAuthProof>> getAuthProof(@Field("newid") String newid, @Field("os") String os);
 
-    @GET("get/client/login/")
-    Observable<BaseResponse<NewAuthLogin>> getAuthLogin();
+    @POST("get/client/login/")
+    @FormUrlEncoded
+    Observable<BaseResponse<NewAuthLogin>> getAuthLogin(@Field("os") String os);
 
     @POST("get/client/pay/")
     @FormUrlEncoded
-    Observable<BaseResponse<NewAuthPay>> getAuthPay(@Field("newid") String newid);
+    Observable<BaseResponse<NewAuthPay>> getAuthPay(@Field("newid") String newid, @Field("os") String os);
 }

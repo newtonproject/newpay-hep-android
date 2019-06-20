@@ -48,15 +48,15 @@ public class HttpService{
     }
 
     public Observable<BaseResponse<NewAuthProof>> getNewAuthProof(String newid) {
-        return demoApi.getAuthProof(newid).subscribeOn(Schedulers.io());
+        return demoApi.getAuthProof(newid, "android").subscribeOn(Schedulers.io());
     }
 
     public Observable<BaseResponse<NewAuthLogin>> getNewAuthLogin() {
-        return demoApi.getAuthLogin().subscribeOn(Schedulers.io());
+        return demoApi.getAuthLogin("android").subscribeOn(Schedulers.io());
     }
 
     public Observable<BaseResponse<NewAuthPay>> getNewAuthPay(String newid) {
-        return demoApi.getAuthPay(newid).subscribeOn(Schedulers.io());
+        return demoApi.getAuthPay(newid, "android").subscribeOn(Schedulers.io());
     }
 
 }
