@@ -1,11 +1,11 @@
-﻿# NewPaySDK Android Documentation
+# NewPaySDK Android Documentation
 
 ## 1.Dependencies
 
 Add the dependencies to your app-level `build.gradle` file.
 
 ```java
-implementation 'org.newtonproject.newpay.sdk:newpay:1.0.6'
+implementation 'org.newtonproject.newpay.sdk:newpay:2.0'
 
 //The signature tools in Demo. On production environment, the signature information must be from server.
 
@@ -19,44 +19,84 @@ implementation "com.madgag.spongycastle:prov:1.58.0.0"
 
 ```java
 // in release environment
-NewPaySDK.init(getApplication(), $yourAppId);
+NewPaySDK.init(getApplication());
 
 // in testnet, beta, dev, etc. environment
-NewPaySDK.init(getApplication(), $yourAppId, Environment.DEVNET);
+NewPaySDK.init(getApplication(), Environment.DEVNET);
 ```
 
-## 3. Get Profile and Sigmessage
+## 3. Get Profile and SigMessage
 
 To get the profile information, call the requestProfile function and catch the result in `onActivityResult`.
 In any case the SDK returns the requestCode `NewPaySDK.REQUEST_CODE_NEWPAY`.
 
 ```java
-NewPaySDK.requestProfile(Activity activity);
+NewPaySDK.requestProfile(Context context, NewAuthLogin authLogin);
 
-...
-	//RequestCode = NewPaySDK.REQUEST_CODE_NEWPAY
-	if(resultCode == RESULT_OK) {
-            String profile = data.getStringExtra("profile");
-            String sigMessage = data.getStringExtra("signature");
-	}
-	
-	if(resultCode == RESULT_CANCELED) {
-        //Treat error
+---
+if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
+    String profile = data.getStringExtra(SIGNED_PROFILE);
+    if(!TextUtils.isEmpty(profile)){
+        profileInfo = gson.fromJson(profile, HepProfile.class);
+        cellphoneTextView.setText(profileInfo.cellphone);
+        nameTextView.setText(profileInfo.name);
+        newidTextView.setText(profileInfo.newid);
+        Log.e(TAG, "Profile:" + profileInfo);
+        if(!TextUtils.isEmpty(profileInfo.avatarPath)) {
+            Picasso.get().load(profileInfo.avatarPath).into(imageView);
+        }
     }
-        
-	//RequestCode = NewPaySDK.REQUEST_CODE_NEWPAY_PAY
-    if(resultCode == RESULT_OK){
-            if(data != null) {
-                String txid = data.getStringExtra("txid");
-            }
-	}
-	if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY && resultCode == RESULT_CANCELED){
-        //Treat error
 }
 ```
 
-## 4. Request Push Order
+## 4. Request Pay
 
 ```java
-  NewPaySDK.placeOrder(Activity activity, SigMessage sigMessage);
+  NewPaySDK.pay(Activity activity, NewAuthPay pay);
+
+---
+if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
+    String res = data.getStringExtra(SIGNED_PAY);
+    ConfirmedPayment payment = gson.fromJson(res, ConfirmedPayment.class);
+    Toast.makeText(this, "txid is:" + payment.txid, Toast.LENGTH_SHORT).show();
+}
+
 ```
+## 5. Request submit place order
+
+``` java
+NewPaySDK.placeOrder(this , Request.authProof());
+
+---
+if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
+    String res = data.getStringExtra(SIGNED_PROOF);
+    ConfirmedProof proof = gson.fromJson(res, ConfirmedProof.class);
+    Toast.makeText(this, proof.proofHash, Toast.LENGTH_SHORT).show();
+}
+```
+
+## 6. Verify the response data
+``` python
+HepProfile， ConfirmedPayment, ConfirmedProof
+1. verify profile
+    auth_helper.validate_auth_callback(hep_profile)
+2. verify pay signature
+    is_valid = pay_helper.validate_pay_callback(confirmed_payment)
+    if is_valid:
+        valid_transaction = pay_helper.validate_transaction(confirmed_payment.txid)
+        ---
+        {'block_height': 904704,
+         'from_address': 'NEW17xYWcvn5cp7rgYubVeenHZLGDJ5JtJapUPm',
+         'order_number': '2d1682abec4c40a793a47127f2ad3301',
+         'status': 1,
+         'to_address': 'NEW17xYWcvn5cp7rgYubVeenHZLGDJ5JtJapUPm',
+         'txid': '0xd7ab1ddcad52efd96298610030c985083cb6639b3f0f07c86f51ea7845a61237',
+         'value': '100'
+         }
+3. verify proof signature
+    is_valid = pay_helper.validate_proof_callback(confirmed_proof)
+    if is_valid:
+        valid_proof = pay_helper.validate_transaction(confirmed_payment.txid)
+
+```
+TBD
