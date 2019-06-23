@@ -75,28 +75,4 @@ if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
 }
 ```
 
-## 6. Verify the response data
-``` python
-HepProfile， ConfirmedPayment, ConfirmedProof
-1. verify profile
-    auth_helper.validate_auth_callback(hep_profile)
-2. verify pay signature
-    is_valid = pay_helper.validate_pay_callback(confirmed_payment)
-    if is_valid:
-        valid_transaction = pay_helper.validate_transaction(confirmed_payment.txid)
-        ---
-        {'block_height': 904704,
-         'from_address': 'NEW17xYWcvn5cp7rgYubVeenHZLGDJ5JtJapUPm',
-         'order_number': '2d1682abec4c40a793a47127f2ad3301',
-         'status': 1,
-         'to_address': 'NEW17xYWcvn5cp7rgYubVeenHZLGDJ5JtJapUPm',
-         'txid': '0xd7ab1ddcad52efd96298610030c985083cb6639b3f0f07c86f51ea7845a61237',
-         'value': '100'
-         }
-3. verify proof signature
-    is_valid = pay_helper.validate_proof_callback(confirmed_proof)
-    if is_valid:
-        valid_proof = pay_helper.validate_transaction(confirmed_payment.txid)
-
-```
-TBD
+## 6. Verify the response on server
