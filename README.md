@@ -65,7 +65,7 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
 ## 5. Request submit place order
 
 ``` java
-NewPaySDK.placeOrder(this , Request.authProof());
+NewPaySDK.placeOrder(Activity activity, NewAuthProof authProof);
 
 ---
 if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
