@@ -5,7 +5,7 @@
 Add the dependencies to your app-level `build.gradle` file.
 
 ```java
-implementation 'org.newtonproject.newpay.sdk:newpay:2.0'
+implementation 'org.newtonproject.newpay.sdk:newpay:2.0.1'
 
 //The signature tools in Demo. On production environment, the signature information must be from server.
 
@@ -30,10 +30,18 @@ NewPaySDK.init(getApplication(), Environment.DEVNET);
 To get the profile information, call the requestProfile function and catch the result in `onActivityResult`.
 In any case the SDK returns the requestCode `NewPaySDK.REQUEST_CODE_NEWPAY`.
 
+#### get the login parameters
+```java
+Observable<BaseResponse<NewAuthLogin>> getAuthLogin(@Field("os") String os);
+```
+
+#### send the login parameter to Newpay
 ```java
 NewPaySDK.requestProfile(Context context, NewAuthLogin authLogin);
+```
 
----
+#### receive the user profile from newpay
+```java
 if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
     String profile = data.getStringExtra(SIGNED_PROFILE);
     if(!TextUtils.isEmpty(profile)){
@@ -51,10 +59,18 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
 
 ## 4. Request Pay
 
+#### get the pay parameters
+```java
+Observable<BaseResponse<NewAuthPay>> getAuthPay(@Field("newid") String newid, @Field("os") String os);
+```
+
+#### send the pay parameter to newpay
 ```java
   NewPaySDK.pay(Activity activity, NewAuthPay pay);
+```
 
----
+#### receive the pay information from newpay
+```java
 if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
     String res = data.getStringExtra(SIGNED_PAY);
     ConfirmedPayment payment = gson.fromJson(res, ConfirmedPayment.class);
@@ -64,10 +80,18 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
 ```
 ## 5. Request submit place order
 
-``` java
-NewPaySDK.placeOrder(this , Request.authProof());
+#### get the proof parameters
+```java
+Observable<BaseResponse<NewAuthProof>> getAuthProof(@Field("newid") String newid, @Field("os") String os);
+```
 
----
+#### send the proof parameter to newpay
+``` java
+NewPaySDK.placeOrder(Activity activity , NewAuthProof proof);
+```
+
+#### receive the proof information from newpay
+```java
 if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
     String res = data.getStringExtra(SIGNED_PROOF);
     ConfirmedProof proof = gson.fromJson(res, ConfirmedProof.class);
