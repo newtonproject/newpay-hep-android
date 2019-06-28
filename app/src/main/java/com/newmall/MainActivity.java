@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button single;
     private Button multiple;
     private MainActivity context;
+    private Button requestprofile;
 
 
     @Override
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         newidTextView = findViewById(R.id.newidTextView);
         imageView = findViewById(R.id.avatarImageView);
         request20Bt = findViewById(R.id.request20Bt);
+        requestprofile = findViewById(R.id.requestprofile);
         dev = findViewById(R.id.dev);
         beta = findViewById(R.id.beta);
         testnet = findViewById(R.id.testnet);
@@ -90,10 +92,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         evn = findViewById(R.id.env);
         profileLinearLayout.setOnClickListener(this);
         request20Bt.setOnClickListener(this);
+        requestprofile.setOnClickListener(this);
         dev.setOnClickListener(this);
         beta.setOnClickListener(this);
         mainnet.setOnClickListener(this);
         testnet.setOnClickListener(this);
+        testnet.callOnClick();
         single = findViewById(R.id.pushSingle);
         multiple = findViewById(R.id.pushMultiple);
         single.setOnClickListener(this);
@@ -103,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.requestprofile:
             case R.id.profileLayout:
                 HttpService
                         .getInstance()
@@ -242,13 +247,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
                 String res = data.getStringExtra(SIGNED_PAY);
                 ConfirmedPayment payment = gson.fromJson(res, ConfirmedPayment.class);
-                Toast.makeText(this, "txid is:" + payment.txid, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "提交订单成功 txid is:" + payment.txid, Toast.LENGTH_SHORT).show();
             }
 
             if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
                 String res = data.getStringExtra(SIGNED_PROOF);
                 ConfirmedProof proof = gson.fromJson(res, ConfirmedProof.class);
-                Toast.makeText(this, proof.proofHash, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "上链成功: proof hash is" + proof.proofHash, Toast.LENGTH_SHORT).show();
             }
         }
 

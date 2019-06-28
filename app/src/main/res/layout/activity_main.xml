@@ -55,6 +55,13 @@
         app:layout_constraintTop_toBottomOf="@id/profileLayout"
         >
         <Button
+            android:id="@+id/requestprofile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="点击登录"
+            />
+        <Button
             android:id="@+id/request20Bt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
