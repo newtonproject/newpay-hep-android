@@ -33,6 +33,20 @@ In any case the SDK returns the requestCode `NewPaySDK.REQUEST_CODE_NEWPAY`.
 #### get the login parameters
 ```java
 Observable<BaseResponse<NewAuthLogin>> getAuthLogin(@Field("os") String os);
+
+{
+    "uuid": "session_id,random string",
+    "dapp_id": "your dapp id",
+    "protocol": "HEP",
+    "version": "1.0",
+    "ts": "timestamp",
+    "nonce": "random string",
+    "action": "hep.auth.login",
+    "scope": "1", // 1 is summary, 2 is detail for profile.
+    "memo": "request memo",
+    "sign_type": "secp256r1",
+    "signature": "0x......."
+}
 ```
 
 #### send the login parameter to Newpay
@@ -62,6 +76,25 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
 #### get the pay parameters
 ```java
 Observable<BaseResponse<NewAuthPay>> getAuthPay(@Field("newid") String newid, @Field("os") String os);
+
+{
+    "uuid": "session_id,random string",
+    "dapp_id": "your dapp id",
+    "protocol": "HEP",
+    "version": "1.0",
+    "ts": "timestamp",
+    "nonce": "random string",
+    "action": "hep.pay.order",
+    "description": "order description",
+    "price_currency": "CNY", //NEW...
+    "total_price": "100",
+    "order_number": "order number",
+    "seller": "sellerNewid",
+    "customer": "customer Newid",
+    "broker": "broker Newid",
+    "sign_type": "secp256r1",
+    "signature": "0x......."
+}
 ```
 
 #### send the pay parameter to newpay
@@ -83,6 +116,19 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
 #### get the proof parameters
 ```java
 Observable<BaseResponse<NewAuthProof>> getAuthProof(@Field("newid") String newid, @Field("os") String os);
+
+{
+    "uuid": "session_id,random string",
+    "dapp_id": "your dapp id",
+    "protocol": "HEP",
+    "version": "1.0",
+    "ts": "timestamp",
+    "nonce": "random string",
+    "action": "hep.proof.submit",
+    "proof_hash": "proof hash"
+    "sign_type": "secp256r1",
+    "signature": "0x......."
+}
 ```
 
 #### send the proof parameter to newpay
