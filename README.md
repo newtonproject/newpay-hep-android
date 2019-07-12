@@ -70,7 +70,7 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
     }
 }
 ```
-
+#### Verify the profile information on server
 ```java POST PROFILE TO API
 {
     "signature": "0x...",
@@ -125,7 +125,7 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
 }
 ```
 
-
+#### Verify the pay information on server
 ```java POST PAY INFORMATION TO API
 {
     "signature": "0x...",
@@ -171,7 +171,7 @@ if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
 }
 ```
 
-
+#### Verify the proof information on server
 ```java POST PROOF INFORMATION TO API
 {
     "signature": "0x...",
@@ -183,5 +183,3 @@ if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
     "uuid": "session id, random string"
 }
 ```
-
-## 6. Verify the response on server
