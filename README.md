@@ -71,6 +71,20 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
 }
 ```
 
+```java POST PROFILE TO API
+{
+    "signature": "0x...",
+    "sign_type": "secp256r1",
+    "uuid": "uuid random string",
+    "name": "profile name",
+    "country_code": "user's country code",
+    "cellphone": "user's cellphone",
+    "avatar": "avatar path",
+    "address": "user's address",
+    "newid": "user's newid ",
+    "invite_code": "user's invite code"
+}
+```
 ## 4. Request Pay
 
 #### get the pay parameters
@@ -109,7 +123,20 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
     ConfirmedPayment payment = gson.fromJson(res, ConfirmedPayment.class);
     Toast.makeText(this, "txid is:" + payment.txid, Toast.LENGTH_SHORT).show();
 }
+```
 
+
+```java POST PAY INFORMATION TO API
+{
+    "signature": "0x...",
+    "sign_type": "secp256r1",
+    "txid": "transaction id",
+    "ts": "timestamp",
+    "nonce": "random string",
+    "order_number": "order number",
+    "dapp_id": "dapp id",
+    "uuid": "session id, random string"
+}
 ```
 ## 5. Request submit place order
 
@@ -141,6 +168,19 @@ if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
     String res = data.getStringExtra(SIGNED_PROOF);
     ConfirmedProof proof = gson.fromJson(res, ConfirmedProof.class);
     Toast.makeText(this, proof.proofHash, Toast.LENGTH_SHORT).show();
+}
+```
+
+
+```java POST PROOF INFORMATION TO API
+{
+    "signature": "0x...",
+    "sign_type": "secp256r1",
+    "proof_hash": "proof hash",
+    "ts": "timestamp",
+    "nonce": "random string",
+    "dapp_id": "dapp id",
+    "uuid": "session id, random string"
 }
 ```
 
