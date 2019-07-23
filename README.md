@@ -33,6 +33,20 @@ In any case the SDK returns the requestCode `NewPaySDK.REQUEST_CODE_NEWPAY`.
 #### get the login parameters
 ```java
 Observable<BaseResponse<NewAuthLogin>> getAuthLogin(@Field("os") String os);
+
+{
+    "uuid": "session_id,random string",
+    "dapp_id": "your dapp id",
+    "protocol": "HEP",
+    "version": "1.0",
+    "ts": "timestamp",
+    "nonce": "random string",
+    "action": "hep.auth.login",
+    "scope": "1", // 1 is summary, 2 is detail for profile.
+    "memo": "request memo",
+    "sign_type": "secp256r1",
+    "signature": "0x......."
+}
 ```
 
 #### send the login parameter to Newpay
@@ -56,12 +70,45 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
     }
 }
 ```
-
+#### Verify the profile information on server
+```java POST PROFILE TO API
+{
+    "signature": "0x...",
+    "sign_type": "secp256r1",
+    "uuid": "uuid random string",
+    "name": "profile name",
+    "country_code": "user's country code",
+    "cellphone": "user's cellphone",
+    "avatar": "avatar path",
+    "address": "user's address",
+    "newid": "user's newid ",
+    "invite_code": "user's invite code"
+}
+```
 ## 4. Request Pay
 
 #### get the pay parameters
 ```java
 Observable<BaseResponse<NewAuthPay>> getAuthPay(@Field("newid") String newid, @Field("os") String os);
+
+{
+    "uuid": "session_id,random string",
+    "dapp_id": "your dapp id",
+    "protocol": "HEP",
+    "version": "1.0",
+    "ts": "timestamp",
+    "nonce": "random string",
+    "action": "hep.pay.order",
+    "description": "order description",
+    "price_currency": "CNY", //NEW...
+    "total_price": "100",
+    "order_number": "order number",
+    "seller": "sellerNewid",
+    "customer": "customer Newid",
+    "broker": "broker Newid",
+    "sign_type": "secp256r1",
+    "signature": "0x......."
+}
 ```
 
 #### send the pay parameter to newpay
@@ -76,13 +123,39 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
     ConfirmedPayment payment = gson.fromJson(res, ConfirmedPayment.class);
     Toast.makeText(this, "txid is:" + payment.txid, Toast.LENGTH_SHORT).show();
 }
+```
 
+#### Verify the pay information on server
+```java POST PAY INFORMATION TO API
+{
+    "signature": "0x...",
+    "sign_type": "secp256r1",
+    "txid": "transaction id",
+    "ts": "timestamp",
+    "nonce": "random string",
+    "order_number": "order number",
+    "dapp_id": "dapp id",
+    "uuid": "session id, random string"
+}
 ```
 ## 5. Request submit place order
 
 #### get the proof parameters
 ```java
 Observable<BaseResponse<NewAuthProof>> getAuthProof(@Field("newid") String newid, @Field("os") String os);
+
+{
+    "uuid": "session_id,random string",
+    "dapp_id": "your dapp id",
+    "protocol": "HEP",
+    "version": "1.0",
+    "ts": "timestamp",
+    "nonce": "random string",
+    "action": "hep.proof.submit",
+    "proof_hash": "proof hash"
+    "sign_type": "secp256r1",
+    "signature": "0x......."
+}
 ```
 
 #### send the proof parameter to newpay
@@ -98,4 +171,15 @@ if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
 }
 ```
 
-## 6. Verify the response on server
+#### Verify the proof information on server
+```java POST PROOF INFORMATION TO API
+{
+    "signature": "0x...",
+    "sign_type": "secp256r1",
+    "proof_hash": "proof hash",
+    "ts": "timestamp",
+    "nonce": "random string",
+    "dapp_id": "dapp id",
+    "uuid": "session id, random string"
+}
+```
