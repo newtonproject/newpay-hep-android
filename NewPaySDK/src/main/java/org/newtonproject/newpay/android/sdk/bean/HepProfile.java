@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class HepProfile {
     @SerializedName("signature")
-    private String signature;
+    public String signature;
     @SerializedName("sign_type")
-    private String sign_type ; // prime256v1   NIST P-256
+    public String sign_type ; // prime256v1   NIST P-256
     @SerializedName("uuid")
     private String uuid;
     @SerializedName("name")

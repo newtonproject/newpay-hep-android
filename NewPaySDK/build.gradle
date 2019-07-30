@@ -6,7 +6,7 @@ publish {
     userOrg = 'xiawu'
     groupId = 'org.newtonproject.newpay.sdk'
     artifactId = 'newpay'
-    publishVersion = '2.0.2'
+    publishVersion = '2.0.3'
     desc = 'NewPaySDK for jointly login and place order information.'
     website = 'https://github.com/newtonproject/NewPaySDK-Android'
 }
