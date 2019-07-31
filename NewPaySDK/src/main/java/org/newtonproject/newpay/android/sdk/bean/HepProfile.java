@@ -8,7 +8,7 @@ public class HepProfile {
     @SerializedName("sign_type")
     public String sign_type ; // prime256v1   NIST P-256
     @SerializedName("uuid")
-    private String uuid;
+    public String uuid;
     @SerializedName("name")
     public String name;
     @SerializedName("country_code")
