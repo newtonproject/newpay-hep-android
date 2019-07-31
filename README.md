@@ -5,7 +5,7 @@
 Add the dependencies to your app-level `build.gradle` file.
 
 ```java
-implementation 'org.newtonproject.newpay.sdk:newpay:2.0.3'
+implementation 'org.newtonproject.newpay.sdk:newpay:2.0.4'
 
 //The signature tools in Demo. On production environment, the signature information must be from server.
 
