@@ -260,21 +260,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public class ErrorCode {
-        static final int SUCCESS = 1;
+        static final int SUCCESS = 1; // 成功
 
-        static final int CANCEL = 2;
+        static final int CANCEL = 2;   // 取消，用户主动操作
 
-        static final int NO_NEWPAY = 100;
-        static final int NO_PROFILE = 101;
-        static final int NO_BUNDLE_SOURCE = 102;
-        static final int SIGNATURE_ERROR = 103;
-        static final int SELLER_NEWID_ERROR = 104;
-        static final int PROTOCOL_VERSION_LOW = 105;
-        static final int NO_ACTION = 106;
-        static final int APPID_ERROR = 107;
-        static final int NO_ORDER_INFO = 108;
-        static final int NEWID_ERROR = 109;
-        static final int NO_WALLET = 110;
-        static final int UNKNOWN_ERROR = 1000;
+        static final int NO_NEWPAY = 100;  // 没有安装 NewPay
+        static final int NO_PROFILE = 101; // 没有用户信息，即没有 NewID
+        static final int NO_BUNDLE_SOURCE = 102; // 注册的包名不匹配， ios 为 bundle Id
+        static final int SIGNATURE_ERROR = 103;  // 签名认证失败，一般为 secp256r1 签名认证
+        static final int SELLER_NEWID_ERROR = 104; // 商家的 NEWID 验证失败
+        static final int PROTOCOL_VERSION_LOW = 105;  // 协议版本过低，建议升级 sdk 
+        static final int NO_ACTION = 106;   // 没有传递Action， 意外情况错误
+        static final int APPID_ERROR = 107;  // dapp Id 校验失败
+        static final int NO_ORDER_INFO = 108;  // 没有订单信息
+        static final int NEWID_ERROR = 109;  // newid 验证失败
+        static final int NO_WALLET = 110;    // 没有 newpay 钱包
+        static final int UNKNOWN_ERROR = 1000;   // 一般为网络错误，服务端会返回验证错误信息
     }
 }
