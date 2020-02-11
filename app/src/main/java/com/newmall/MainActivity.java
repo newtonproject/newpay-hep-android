@@ -28,6 +28,7 @@ import org.newtonproject.newpay.android.sdk.bean.HepProfile;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthLogin;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthPay;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthProof;
+import org.newtonproject.newpay.android.sdk.constant.Constant;
 import org.newtonproject.newpay.android.sdk.constant.Environment;
 
 import java.util.List;
@@ -204,9 +205,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtra("ADDRESS", "NEW17xNFGLDpUgTY9QkvRrMXWb8ZeZCeiEFAhk5");
         intent.putExtra("AMOUNT", "20");
         intent.putExtra("EXTRA_MSG", "orderNumber"); // 备注信息
+        intent.putExtra("REQUEST_PAY_SOURCE", getPackageName());
         boolean isSafe = checkNewPay(intent);
         if(isSafe) {
-            startActivityForResult(intent, 200);
+            startActivityForResult(intent, 1008);
         } else {
             Log.e("Error:", "No instance");
         }
@@ -278,11 +280,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
 
-            // pay result
+            // hep pay result
             if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
                 String res = data.getStringExtra(SIGNED_PAY);
                 ConfirmedPayment payment = gson.fromJson(res, ConfirmedPayment.class);
                 Toast.makeText(this, "提交订单成功 txid is:" + payment.txid, Toast.LENGTH_SHORT).show();
+            }
+            if(requestCode == 1008) {
+                String res = data.getStringExtra("txid");
+                Toast.makeText(this, "提交订单成功 txid is:" + res, Toast.LENGTH_SHORT).show();
+
             }
 
             if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
