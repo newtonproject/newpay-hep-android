@@ -85,6 +85,13 @@
             android:text="上链多个商品"
             android:visibility="gone"
             />
+        <Button
+            android:id="@+id/directSend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="直接调用支付20"
+            />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

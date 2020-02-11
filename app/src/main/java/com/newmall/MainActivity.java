@@ -1,6 +1,9 @@
 package com.newmall;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +29,8 @@ import org.newtonproject.newpay.android.sdk.bean.NewAuthLogin;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthPay;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthProof;
 import org.newtonproject.newpay.android.sdk.constant.Environment;
+
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -66,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button multiple;
     private MainActivity context;
     private Button requestprofile;
+    private Button directSend;
 
 
     @Override
@@ -85,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageView = findViewById(R.id.avatarImageView);
         request20Bt = findViewById(R.id.request20Bt);
         requestprofile = findViewById(R.id.requestprofile);
+        directSend = findViewById(R.id.directSend);
+
         dev = findViewById(R.id.dev);
         beta = findViewById(R.id.beta);
         testnet = findViewById(R.id.testnet);
@@ -93,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         profileLinearLayout.setOnClickListener(this);
         request20Bt.setOnClickListener(this);
         requestprofile.setOnClickListener(this);
+        directSend.setOnClickListener(this);
         dev.setOnClickListener(this);
         beta.setOnClickListener(this);
         mainnet.setOnClickListener(this);
@@ -180,7 +189,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 evn.setText("main");
                 NewPaySDK.init(getApplication(), Environment.MAINNET);
                 break;
+            case R.id.directSend:
+                directSendToNewPay();
+                break;
         }
+    }
+
+    private void directSendToNewPay() {
+        String authPayDev = "newpay://org.newtonproject.newpay.android.dev.pay";
+        String authPayTest = "newpay://org.newtonproject.newpay.android.pay";
+        String authPayRelease = "newpay://org.newtonproject.newpay.android.release.pay";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authPayDev));
+        // address have to match the network.
+        intent.putExtra("ADDRESS", "NEW17xNFGLDpUgTY9QkvRrMXWb8ZeZCeiEFAhk5");
+        intent.putExtra("AMOUNT", "20");
+        intent.putExtra("EXTRA_MSG", "orderNumber"); // 备注信息
+        boolean isSafe = checkNewPay(intent);
+        if(isSafe) {
+            startActivityForResult(intent, 200);
+        } else {
+            Log.e("Error:", "No instance");
+        }
+    }
+
+    private boolean checkNewPay(Intent intent) {
+        PackageManager packageManager = getApplication().getPackageManager();
+        List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, 0);
+        return activities.size() > 0;
     }
 
     private void pushSingle() {

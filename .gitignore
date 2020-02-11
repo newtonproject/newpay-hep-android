@@ -1,4 +1,7 @@
 *.iml
+.classpath
+.project
+.settings
 .gradle
 .idea/
 /local.properties
