@@ -89,9 +89,9 @@ public class NewPaySDK {
     }
 
     /**
-     * request newid profile
-     * @param activity
-     * @param params
+     * Request newid profile
+     * @param activity witch activity where you want to call this function
+     * @param params {@link NewAuthLogin}
      */
     public static void requestProfile(Activity activity, NewAuthLogin params) {
         Intent intent = getRequestProfileIntent(params, activity);
@@ -113,9 +113,9 @@ public class NewPaySDK {
     }
 
     /**
-     * request pay
-     * @param activity
-     * @param params
+     * Request pay
+     * @param activity witch activity where you want to call this function
+     * @param params {@link NewAuthPay}
      */
     public static void pay(Activity activity, NewAuthPay params){
         Intent intent = getRequestPayIntent(params, activity);
@@ -137,9 +137,9 @@ public class NewPaySDK {
     }
 
     /**
-     * request place order
-     * @param activity
-     * @param params
+     * Request place order
+     * @param activity witch activity where you want to call this function
+     * @param params {@link NewAuthProof}
      */
     public static void placeOrder(Activity activity,  NewAuthProof params) {
         Intent intent = getRequestProofIntent(params, activity);
@@ -161,9 +161,9 @@ public class NewPaySDK {
     }
 
     /**
-     * request sign message
-     * @param activity
-     * @param params
+     * Request sign message
+     * @param activity witch activity where you want to call this function
+     * @param params {@link NewSignMessage}
      */
     public static void requestSignMessage(Activity activity,  NewSignMessage params) {
         Intent intent = getRequestSignMessageIntent(params, activity);
@@ -185,9 +185,9 @@ public class NewPaySDK {
     }
 
     /**
-     * request sign transaction
-     * @param activity
-     * @param params
+     * Request sign transaction
+     * @param activity witch activity where you want to call this function
+     * @param params {@link NewSignTransaction}
      */
     public static void requestSignTransaction(Activity activity,  NewSignTransaction params) {
         Intent intent = getRequestSignTransactionIntent(params, activity);

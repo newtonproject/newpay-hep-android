@@ -5,9 +5,6 @@ import com.google.gson.annotations.SerializedName;
 /**
  * @author weixuefeng@lubangame.com
  * @version $
- * @time: 2020-03-10--16:39
- * @description
- * @copyright (c) 2020 Newton Foundation. All rights reserved.
  */
 public class NewSignTransaction {
     @SerializedName("uuid")
