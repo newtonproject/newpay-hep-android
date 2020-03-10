@@ -92,6 +92,20 @@
             android:layout_margin="5dp"
             android:text="直接调用支付20"
             />
+        <Button
+            android:id="@+id/requestSignMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="请求签名信息"
+            />
+        <Button
+            android:id="@+id/requestSignTransaction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="请求签名交易"
+            />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

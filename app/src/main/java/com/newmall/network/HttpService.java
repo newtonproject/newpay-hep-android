@@ -1,8 +1,12 @@
 package com.newmall.network;
 
+import com.newmall.entity.BaseTransaction;
+
 import org.newtonproject.newpay.android.sdk.bean.NewAuthLogin;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthPay;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthProof;
+import org.newtonproject.newpay.android.sdk.bean.NewSignMessage;
+import org.newtonproject.newpay.android.sdk.bean.NewSignTransaction;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -23,7 +27,7 @@ public class HttpService{
     private DemoApi demoApi;
 
     private HttpService() {}
-    private String baseUrl = "http://47.52.170.176:9999/";
+    private String baseUrl = "http://47.240.113.82:9999/";
     private static HttpService instance;
     public static HttpService getInstance() {
         if(instance == null) {
@@ -57,6 +61,14 @@ public class HttpService{
 
     public Observable<BaseResponse<NewAuthPay>> getNewAuthPay(String newid) {
         return demoApi.getAuthPay(newid, "android").subscribeOn(Schedulers.io());
+    }
+
+    public Observable<BaseResponse<NewSignMessage>> getSignMessage(String message) {
+        return demoApi.getSignMessage(message, "android").subscribeOn(Schedulers.io());
+    }
+
+    public Observable<BaseResponse<NewSignTransaction>> getSignTransaction(BaseTransaction transaction) {
+        return demoApi.getSignTransaction(transaction).subscribeOn(Schedulers.io());
     }
 
 }

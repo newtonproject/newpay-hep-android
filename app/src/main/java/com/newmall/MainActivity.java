@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newmall.entity.BaseTransaction;
 import com.newmall.network.BaseResponse;
 import com.newmall.network.HttpService;
 import com.squareup.picasso.Picasso;
@@ -36,6 +37,7 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -73,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MainActivity context;
     private Button requestprofile;
     private Button directSend;
+    private Button requestSignTransaction;
+    private Button requestSignMessage;
 
 
     @Override
@@ -93,16 +97,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         request20Bt = findViewById(R.id.request20Bt);
         requestprofile = findViewById(R.id.requestprofile);
         directSend = findViewById(R.id.directSend);
+        requestSignMessage = findViewById(R.id.requestSignMessage);
+        requestSignTransaction = findViewById(R.id.requestSignTransaction);
 
         dev = findViewById(R.id.dev);
         beta = findViewById(R.id.beta);
         testnet = findViewById(R.id.testnet);
         mainnet = findViewById(R.id.mainnet);
         evn = findViewById(R.id.env);
+
         profileLinearLayout.setOnClickListener(this);
         request20Bt.setOnClickListener(this);
         requestprofile.setOnClickListener(this);
         directSend.setOnClickListener(this);
+        requestSignTransaction.setOnClickListener(this);
+        requestSignMessage.setOnClickListener(this);
+
         dev.setOnClickListener(this);
         beta.setOnClickListener(this);
         mainnet.setOnClickListener(this);
@@ -127,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 new Consumer<BaseResponse<NewAuthLogin>>() {
                                     @Override
                                     public void accept(BaseResponse<NewAuthLogin> response) throws Exception {
+                                        Log.i("request profile:", response.toString());
                                         if(response.errorCode == 1) {
                                             NewPaySDK.requestProfile(context, response.result);
                                         }
@@ -193,7 +204,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.directSend:
                 directSendToNewPay();
                 break;
+            case R.id.requestSignMessage:
+                requestSignMessage();
+                break;
+            case R.id.requestSignTransaction:
+                requestSignTransaction();
+                break;
+            default:
+                break;
+
         }
+    }
+
+    private void requestSignMessage() {
+        Disposable message = HttpService.getInstance().getSignMessage("message")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        next-> {
+                            Log.i("requestSignMessage", next.toString());
+                        },
+                        error-> {
+                            Log.e("requestSignMessage", error.toString());
+                        }
+                );
+    }
+
+    private void requestSignTransaction() {
+        BaseTransaction transaction = new BaseTransaction("100", "0x2342", "0x1231231243",
+                "12", "0x3423", "0xf123", "0x123123");
+        Disposable message = HttpService.getInstance().getSignTransaction(transaction)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        next-> {
+                            Log.i("requestSignTransaction", next.toString());
+                        },
+                        error-> {
+                            Log.e("requestSignTransaction", error.toString());
+                        }
+                );
     }
 
     private void directSendToNewPay() {
@@ -253,7 +303,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(data == null) return;
+        if (data == null) {
+            return;
+        }
 
         if(resultCode == RESULT_OK) {
             int errorCode = data.getIntExtra(ERROR_CODE, 0);
