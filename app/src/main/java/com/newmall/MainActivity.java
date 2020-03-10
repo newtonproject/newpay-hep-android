@@ -223,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .subscribe(
                         next-> {
                             Log.i("requestSignMessage", next.toString());
+                            NewPaySDK.requestSignMessage(this, next.result);
                         },
                         error-> {
                             Log.e("requestSignMessage", error.toString());
@@ -239,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .subscribe(
                         next-> {
                             Log.i("requestSignTransaction", next.toString());
+                            NewPaySDK.requestSignTransaction(this, next.result);
                         },
                         error-> {
                             Log.e("requestSignTransaction", error.toString());
@@ -348,6 +350,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String res = data.getStringExtra(SIGNED_PROOF);
                 ConfirmedProof proof = gson.fromJson(res, ConfirmedProof.class);
                 Toast.makeText(this, "上链成功: proof hash is" + proof.proofHash, Toast.LENGTH_SHORT).show();
+            }
+            // on request sign message
+            if(requestCode == NewPaySDK.REQUEST_CODE_SIGN_MESSAGE) {
+                //todo: add result
+            }
+            // on request sign transaction
+            if(requestCode == NewPaySDK.REQUEST_CODE_SIGN_TRANSACTION) {
+                //todo: add result
             }
         }
 

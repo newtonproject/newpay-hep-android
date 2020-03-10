@@ -5,5 +5,8 @@ package org.newtonproject.newpay.android.sdk.constant;
  * @version $Rev$
  */
 public enum Environment {
-    MAINNET, TESTNET, BETANET, DEVNET
+    MAINNET,
+    TESTNET,
+    BETANET,
+    DEVNET
 }

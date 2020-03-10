@@ -17,10 +17,11 @@ import org.newtonproject.newpay.android.sdk.bean.Action;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthLogin;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthPay;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthProof;
+import org.newtonproject.newpay.android.sdk.bean.NewSignMessage;
+import org.newtonproject.newpay.android.sdk.bean.NewSignTransaction;
 import org.newtonproject.newpay.android.sdk.constant.Constant;
 import org.newtonproject.newpay.android.sdk.constant.Environment;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class NewPaySDK {
@@ -31,6 +32,8 @@ public class NewPaySDK {
     public static final int REQUEST_CODE_NEWPAY = 3001;
     public static final int REQUEST_CODE_NEWPAY_PAY = 3002;
     public static final int REQUEST_CODE_PUSH_ORDER = 3003;
+    public static final int REQUEST_CODE_SIGN_MESSAGE = 3004;
+    public static final int REQUEST_CODE_SIGN_TRANSACTION = 3005;
 
 
     private static final String ACTION = "ACTION";
@@ -80,9 +83,16 @@ public class NewPaySDK {
                 authorize_login_place = Constant.MainNet.authorize_login_place;
                 SHARE_URL = Constant.MainNet.share_url;
                 break;
+            default:
+                break;
         }
     }
 
+    /**
+     * request newid profile
+     * @param activity
+     * @param params
+     */
     public static void requestProfile(Activity activity, NewAuthLogin params) {
         Intent intent = getRequestProfileIntent(params, activity);
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY);
@@ -102,6 +112,11 @@ public class NewPaySDK {
         return intent;
     }
 
+    /**
+     * request pay
+     * @param activity
+     * @param params
+     */
     public static void pay(Activity activity, NewAuthPay params){
         Intent intent = getRequestPayIntent(params, activity);
         checkAndStartActivity(activity, intent, REQUEST_CODE_NEWPAY_PAY);
@@ -121,6 +136,11 @@ public class NewPaySDK {
         return intent;
     }
 
+    /**
+     * request place order
+     * @param activity
+     * @param params
+     */
     public static void placeOrder(Activity activity,  NewAuthProof params) {
         Intent intent = getRequestProofIntent(params, activity);
         checkAndStartActivity(activity, intent, REQUEST_CODE_PUSH_ORDER);
@@ -140,6 +160,60 @@ public class NewPaySDK {
         return intent;
     }
 
+    /**
+     * request sign message
+     * @param activity
+     * @param params
+     */
+    public static void requestSignMessage(Activity activity,  NewSignMessage params) {
+        Intent intent = getRequestSignMessageIntent(params, activity);
+        checkAndStartActivity(activity, intent, REQUEST_CODE_SIGN_MESSAGE);
+    }
+
+    public static void requestSignMessage(Fragment fragment,  NewSignMessage params) {
+        Intent intent = getRequestSignMessageIntent(params, fragment.getContext());
+        checkAndStartActivity(fragment, intent, REQUEST_CODE_SIGN_MESSAGE);
+    }
+
+    private static Intent getRequestSignMessageIntent(NewSignMessage params, Context context) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
+        intent.putExtra(ACTION, Action.REQUEST_SIGN_MESSAGE);
+        intent.putExtra(APPID, params.dappId);
+        intent.putExtra(CONTENT, gson.toJson(params));
+        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, context.getPackageName());
+        return intent;
+    }
+
+    /**
+     * request sign transaction
+     * @param activity
+     * @param params
+     */
+    public static void requestSignTransaction(Activity activity,  NewSignTransaction params) {
+        Intent intent = getRequestSignTransactionIntent(params, activity);
+        checkAndStartActivity(activity, intent, REQUEST_CODE_SIGN_TRANSACTION);
+    }
+
+    public static void requestSignMessage(Fragment fragment,  NewSignTransaction params) {
+        Intent intent = getRequestSignTransactionIntent(params, fragment.getContext());
+        checkAndStartActivity(fragment, intent, REQUEST_CODE_SIGN_TRANSACTION);
+    }
+
+    private static Intent getRequestSignTransactionIntent(NewSignTransaction params, Context context) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorize_login_place));
+        intent.putExtra(ACTION, Action.REQUEST_SIGN_TRANSACTION);
+        intent.putExtra(APPID, params.dappId);
+        intent.putExtra(CONTENT, gson.toJson(params));
+        intent.putExtra(Constant.EXTRA_BUNDLE_SOURCE, context.getPackageName());
+        return intent;
+    }
+
+    /**
+     * Check newpay app and open target activity.
+     * @param activity
+     * @param intent
+     * @param requestCode
+     */
     private static void checkAndStartActivity(Activity activity, Intent intent, int requestCode) {
         boolean isIntentSafe = checkNewPay(intent);
         if (isIntentSafe) {
@@ -158,6 +232,10 @@ public class NewPaySDK {
         }
     }
 
+    /**
+     * If not newpay install and jump to download url.
+     * @param context
+     */
     private static void startDownloadUrl(final Context context) {
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setCancelable(true)
