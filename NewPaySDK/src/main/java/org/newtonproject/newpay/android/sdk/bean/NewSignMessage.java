@@ -25,6 +25,8 @@ public class NewSignMessage {
     public String signature;
 
 
+    @SerializedName("action")
+    public String action;
     @SerializedName("message")
     public String message;
 
@@ -40,6 +42,7 @@ public class NewSignMessage {
                 ", signType='" + signType + '\'' +
                 ", signature='" + signature + '\'' +
                 ", message='" + message + '\'' +
+                ", action='" + action + '\'' +
                 '}';
     }
 }
