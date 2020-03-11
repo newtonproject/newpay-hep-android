@@ -183,3 +183,68 @@ if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
     "uuid": "session id, random string"
 }
 ```
+## 6. Request sign message
+
+### Get the sign message parameters
+```java
+Observable<BaseResponse<NewSignMessage>> getSignMessage(@Field("message") String message, @Field("os") String os);
+
+{
+    "uuid": "session_id,random string",
+    "dapp_id": "your dapp id",
+    "protocol": "HEP",
+    "version": "1.0",
+    "ts": "timestamp",
+    "nonce": "random string",
+    "action": "hep.sign.message",
+    "sign_type": "secp256r1",
+    "signature": "0x.......",
+    "message": "need sign message"
+}
+```
+#### send the sign message parameter to newpay
+``` java
+NewPaySDK.requestSignMessage(this, next.result);
+
+#### receive the sign message information from newpay
+```java
+ if(requestCode == NewPaySDK.REQUEST_CODE_SIGN_MESSAGE) {
+     String res = data.getStringExtra(SIGNED_SIGN_MESSAGE);
+     Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
+ }
+```
+## 7. Request sign transaction
+
+### Get the sign transaction parameters
+```java
+ Observable<BaseResponse<NewSignTransaction>> getSignTransaction(@Body BaseTransaction transaction);
+{
+      "uuid": "session_id,random string",
+      "dapp_id": "your dapp id",
+      "protocol": "HEP",
+      "version": "1.0",
+      "ts": "timestamp",
+      "nonce": "random string",
+      "signType" = "secp256r1", 
+      "signature" = "0x...", 
+      "action" = "hep.sign.transaction",
+      "amount" = "100", 
+      "from" = "0x2342", 
+      "to" = "0x1231231243", 
+      "gasLimit" = "100", 
+      "gasPrice" = "123221", 
+      "transactionCount" = "12", 
+      "data" = "0x123123"
+}
+```
+#### send the sign Transaction parameter to newpay
+``` java
+NewPaySDK.requestSignTransaction(this, next.result);
+
+#### receive the sign Transaction information from newpay
+```java
+  if(requestCode == NewPaySDK.REQUEST_CODE_SIGN_TRANSACTION) {
+       String res = data.getStringExtra(SIGNED_SIGN_TRANSACTION);
+       Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
+  }
+```

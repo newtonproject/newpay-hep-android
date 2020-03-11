@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String SIGNED_PROFILE = "SIGNED_PROFILE";
     private static final String SIGNED_PROOF = "SIGNED_PROOF";
     private static final String SIGNED_PAY = "SIGNED_PAY";
+    private static final String SIGNED_SIGN_MESSAGE = "SIGNED_SIGN_MESSAGE";
+    private static final String SIGNED_SIGN_TRANSACTION = "SIGNED_SIGN_TRANSACTION";
 
     private static final String dappId = "5b796b9b48f74f28b96bcd3ea42f9aaf";
     private HepProfile profileInfo;
@@ -353,11 +355,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             // on request sign message
             if(requestCode == NewPaySDK.REQUEST_CODE_SIGN_MESSAGE) {
-                //todo: add result
+                String res = data.getStringExtra(SIGNED_SIGN_MESSAGE);
+                Toast.makeText(this, "信息签名成功 is:" + res, Toast.LENGTH_SHORT).show();
             }
             // on request sign transaction
             if(requestCode == NewPaySDK.REQUEST_CODE_SIGN_TRANSACTION) {
-                //todo: add result
+                String res = data.getStringExtra(SIGNED_SIGN_TRANSACTION);
+                Toast.makeText(this, "交易签名成功 is:" + res, Toast.LENGTH_SHORT).show();
             }
         }
 
