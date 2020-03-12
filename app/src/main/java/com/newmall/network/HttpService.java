@@ -27,7 +27,7 @@ public class HttpService{
     private DemoApi demoApi;
 
     private HttpService() {}
-    private String baseUrl = "http://47.240.113.82:9999/";
+    private String baseUrl = "https://demo.hep.testnet.newtonproject.org/";
     private static HttpService instance;
     public static HttpService getInstance() {
         if(instance == null) {
