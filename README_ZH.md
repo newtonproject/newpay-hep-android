@@ -1,4 +1,5 @@
-﻿# NewPaySDK Android 文档 [English](README.md)
+﻿中文/[English](README.md)
+# NewPaySDK Android 文档 
 
 ## 1.添加依赖项
 

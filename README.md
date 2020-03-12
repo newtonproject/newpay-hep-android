@@ -1,4 +1,5 @@
-# NewPaySDK Android Documentation [中文](README_ZH.md)
+English/[中文](README_ZH.md)
+# NewPaySDK Android Documentation 
 
 ## 1.Dependencies
 
