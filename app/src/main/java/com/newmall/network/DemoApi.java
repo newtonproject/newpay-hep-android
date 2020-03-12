@@ -1,10 +1,15 @@
 package com.newmall.network;
 
+import com.newmall.entity.BaseTransaction;
+
 import org.newtonproject.newpay.android.sdk.bean.NewAuthLogin;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthPay;
 import org.newtonproject.newpay.android.sdk.bean.NewAuthProof;
+import org.newtonproject.newpay.android.sdk.bean.NewSignMessage;
+import org.newtonproject.newpay.android.sdk.bean.NewSignTransaction;
 
 import io.reactivex.Observable;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
@@ -28,4 +33,11 @@ public interface DemoApi {
     @POST("get/client/pay/")
     @FormUrlEncoded
     Observable<BaseResponse<NewAuthPay>> getAuthPay(@Field("newid") String newid, @Field("os") String os);
+
+    @POST("get/client/sign/message/")
+    @FormUrlEncoded
+    Observable<BaseResponse<NewSignMessage>> getSignMessage(@Field("message") String message, @Field("os") String os);
+
+    @POST("get/client/sign/transaction/")
+    Observable<BaseResponse<NewSignTransaction>> getSignTransaction(@Body BaseTransaction transaction);
 }
