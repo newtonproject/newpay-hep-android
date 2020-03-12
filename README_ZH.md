@@ -1,36 +1,34 @@
-# NewPaySDK Android Documentation [中文](README_ZH.md)
+﻿# NewPaySDK Android 文档 [English](README.md)
 
-## 1.Dependencies
+## 1.添加依赖项
 
-Add the dependencies to your app-level `build.gradle` file.
+在项目的 `build.gradle` 文件添加下面依赖.
 
 ```java
 implementation 'org.newtonproject.newpay.sdk:newpay:2.0.6'
 
-//The signature tools in Demo. On production environment, the signature information must be from server.
-
+//签名工具，注意生产环境的签名应该由服务端完成
 implementation files('libs/crypto-3.3.1-android.jar')
 implementation files('libs/utils-3.3.1-android.jar')
 implementation 'com.madgag.spongycastle:core:1.58.0.0'
 implementation "com.madgag.spongycastle:prov:1.58.0.0"
 ```
 
-## 2. Init NewPaySDK
+## 2. 初始化 NewPaySDK
 
 ```java
-// in release environment
+// 默认正式环境
 NewPaySDK.init(getApplication());
 
-// in testnet, beta, dev, etc. environment
+// 其他环境需要传递不同的参数，支持 DEV, TESTNT, BETA
 NewPaySDK.init(getApplication(), Environment.DEVNET);
 ```
 
-## 3. Get Profile and SigMessage
+## 3. 获取用户基础信息
 
-To get the profile information, call the requestProfile function and catch the result in `onActivityResult`.
-In any case the SDK returns the requestCode `NewPaySDK.REQUEST_CODE_NEWPAY`.
+获取用户信息，使用`NewPaySDK.requestProfile()`函数，结果会在`onActivityResult`中返回，注意 `requestCode == NewPaySDK.REQUEST_CODE_NEWPAY`
 
-#### get the login parameters
+#### 从自己服务端获取联合登录需要的参数信息
 ```java
 Observable<BaseResponse<NewAuthLogin>> getAuthLogin(@Field("os") String os);
 
@@ -42,19 +40,19 @@ Observable<BaseResponse<NewAuthLogin>> getAuthLogin(@Field("os") String os);
     "ts": "timestamp",
     "nonce": "random string",
     "action": "hep.auth.login",
-    "scope": "1", // 1 is summary, 2 is detail for profile.
+    "scope": "1", // 1 大致信息，没有手机号, 2 更详细的用户信息，包括手机号.
     "memo": "request memo",
     "sign_type": "secp256r1",
     "signature": "0x......."
 }
 ```
 
-#### send the login parameter to Newpay
+#### 发送请求登录的参数到 NewPay
 ```java
 NewPaySDK.requestProfile(Context context, NewAuthLogin authLogin);
 ```
 
-#### receive the user profile from newpay
+#### 接收从newpay返回来的用户信息
 ```java
 if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
     String profile = data.getStringExtra(SIGNED_PROFILE);
@@ -70,7 +68,7 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
     }
 }
 ```
-#### Verify the profile information on server
+#### 根据签名和参数,在自己服务端验证用户传回来的信息
 ```java POST PROFILE TO API
 {
     "signature": "0x...",
@@ -85,9 +83,9 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY) {
     "invite_code": "user's invite code"
 }
 ```
-## 4. Request Pay
+## 4. 请求支付
 
-#### get the pay parameters
+#### 从服务端获取支付需要的参数信息
 ```java
 Observable<BaseResponse<NewAuthPay>> getAuthPay(@Field("newid") String newid, @Field("os") String os);
 
@@ -111,12 +109,12 @@ Observable<BaseResponse<NewAuthPay>> getAuthPay(@Field("newid") String newid, @F
 }
 ```
 
-#### send the pay parameter to newpay
+#### 发送支付参数到NewPay
 ```java
   NewPaySDK.pay(Activity activity, NewAuthPay pay);
 ```
 
-#### receive the pay information from newpay
+#### 接收支付结果信息
 ```java
 if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
     String res = data.getStringExtra(SIGNED_PAY);
@@ -125,7 +123,7 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
 }
 ```
 
-#### Verify the pay information on server
+#### 服务端验证支付结果信息
 ```java POST PAY INFORMATION TO API
 {
     "signature": "0x...",
@@ -138,9 +136,9 @@ if(requestCode == NewPaySDK.REQUEST_CODE_NEWPAY_PAY){
     "uuid": "session id, random string"
 }
 ```
-## 5. Request submit place order
+## 5. 请求上链交易信息
 
-#### get the proof parameters
+#### 获取上链需要的参数信息
 ```java
 Observable<BaseResponse<NewAuthProof>> getAuthProof(@Field("newid") String newid, @Field("os") String os);
 
@@ -158,11 +156,12 @@ Observable<BaseResponse<NewAuthProof>> getAuthProof(@Field("newid") String newid
 }
 ```
 
-#### send the proof parameter to newpay
+#### 发送上链信息到NewPay
 ``` java
 NewPaySDK.placeOrder(Activity activity, NewAuthProof authProof);
+```
 
-#### receive the proof information from newpay
+#### 从NewPay接收上链结果信息
 ```java
 if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
     String res = data.getStringExtra(SIGNED_PROOF);
@@ -171,7 +170,7 @@ if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
 }
 ```
 
-#### Verify the proof information on server
+#### 验证上链信息
 ```java POST PROOF INFORMATION TO API
 {
     "signature": "0x...",
@@ -183,9 +182,9 @@ if(requestCode == NewPaySDK.REQUEST_CODE_PUSH_ORDER) {
     "uuid": "session id, random string"
 }
 ```
-## 6. Request sign message
+## 6. 请求NewPay签名信息，一般为字符串
 
-### Get the sign message parameters
+### 获取签名需要的参数，用户输入的 `message`，到服务端进行签名
 ```java
 Observable<BaseResponse<NewSignMessage>> getSignMessage(@Field("message") String message, @Field("os") String os);
 
@@ -202,21 +201,21 @@ Observable<BaseResponse<NewSignMessage>> getSignMessage(@Field("message") String
     "message": "need sign message"
 }
 ```
-#### send the sign message parameter to newpay
+#### 发送签名信息到NewPay
 ``` java
 NewPaySDK.requestSignMessage(Activity activity, NewSignMessage newSignMessage);
 ```
 
-#### receive the sign message information from newpay
+#### 接收签名结果
 ```java
  if(requestCode == NewPaySDK.REQUEST_CODE_SIGN_MESSAGE) {
-     String res = data.getStringExtra(SIGNED_SIGN_MESSAGE);
+     String res = data.getStringExtra(SIGNED_SIGN_MESSAGE); //字段详见 demo
      Toast.makeText(this, res, Toast.LENGTH_SHORT).show();
  }
 ```
-## 7. Request sign transaction
+## 7. 请求签署交易
 
-### Get the sign transaction parameters
+### 获取需要签名的交易信息，包括基础交易信息和交易信息在自己dapp的签名
 ```java
  Observable<BaseResponse<NewSignTransaction>> getSignTransaction(@Body BaseTransaction transaction);
 {
@@ -238,12 +237,12 @@ NewPaySDK.requestSignMessage(Activity activity, NewSignMessage newSignMessage);
       "data" = "0x123123"
 }
 ```
-#### send the sign Transaction parameter to newpay
+#### 发送需要签署的交易信息到NewPay
 ``` java
-NewPaySDK.requestSignTransaction(Activity activity, NewSignTransaction newSignTranasaction);
+NewPaySDK.requestSignTransaction(Activity activity, NewSignTransaction newSignTransaction);
 ```
 
-#### receive the sign Transaction information from newpay
+#### 从newpay接收交易签名结果
 ```java
   if(requestCode == NewPaySDK.REQUEST_CODE_SIGN_TRANSACTION) {
        String res = data.getStringExtra(SIGNED_SIGN_TRANSACTION);
